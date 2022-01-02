@@ -71,6 +71,11 @@ Disable 2FA module (if needed)
 ./docker-compose-wrapper run --rm cli bin/magento module:disable Magento_TwoFactorAuth
 ```
 
+Disable FPC
+```bash
+./docker-compose-wrapper run --rm cli bin/magento cache:disable full_page
+```
+
 Start the stack
 ```bash
 ./docker-compose-wrapper up

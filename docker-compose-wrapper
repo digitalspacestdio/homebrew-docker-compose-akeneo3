@@ -86,7 +86,7 @@ if [[ $1 == "up" ]]; then
   printf "\033[0;37m[${COMPOSE_PROJECT_NAME}] XHGUI URL: http://localhost:${COMPOSE_PROJECT_PORT_XHGUI}/\033[0m\n"
   printf "\033[0;37m[${COMPOSE_PROJECT_NAME}] Mailhog URL: http://localhost:${COMPOSE_PROJECT_PORT_MAIL_WEBGUI}/\033[0m\n"
   printf "\033[0;37m[${COMPOSE_PROJECT_NAME}] Elasticsearch URL: http://localhost:${COMPOSE_PROJECT_PORT_ELASTICSEARCH}/\033[0m\n"
-  printf "\033[0;37m[${COMPOSE_PROJECT_NAME}] Mysql address: 127.0.0.1:${COMPOSE_PROJECT_PORT_MYSQL}/\033[0m\n"
+  printf "\033[0;37m[${COMPOSE_PROJECT_NAME}] Mysql address: 127.0.0.1:${COMPOSE_PROJECT_PORT_MYSQL}\033[0m\n"
 fi
 
 exec ${DOCKER_COMPOSE_BIN} "$@"
