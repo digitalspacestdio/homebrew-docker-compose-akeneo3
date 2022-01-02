@@ -16,4 +16,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   fi
 fi
 
+if [[ ! -d www ]]; then
+  mkdir www
+fi
+
 exec ${DOCKER_COMPOSE_BIN} "$@"
