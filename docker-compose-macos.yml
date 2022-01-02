@@ -1,9 +1,9 @@
 version: '3.4'
 
 volumes:
-  magento-fpm-appcode:
+  appcode:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=host.docker.internal,sync,tcp,rw,noacl,hard,intr,nfsvers=3
+      o: addr=host.docker.internal,rw,noacl,hard,intr,nfsvers=3
       device: ":${PWD}/www"

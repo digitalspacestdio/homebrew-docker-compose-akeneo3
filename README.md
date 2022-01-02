@@ -17,7 +17,7 @@ sudo nfsd restart
 Export your composer auth tokens
 If you use github only
 ```bash
-export COMPOSER_AUTH='{
+export COMPOSE_PROJECT_COMPOSER_AUTH='{
     "http-basic": {
         "repo.magento.com": {
             "username": "xxxxxxxxxxxx",
@@ -32,7 +32,7 @@ export COMPOSER_AUTH='{
 
 To use specific php version just export environment variable:
 ```bash
-export PHP_VERSION=7.4
+export COMPOSE_PROJECT_PHP_VERSION=7.4
 ```
 > following versions are supported: 7.2, 7.3, 7.4, 8.0
 
@@ -91,4 +91,16 @@ Stop the stack
 Destroy the whole data
 ```bash
 ./docker-compose-wrapper down -v
+```
+
+## Mutagen Integration
+Install the Mutagen
+```bash
+brew install mutagen-io/mutagen/mutagen
+```
+
+
+To use mutagen integration just define environment variable
+```bash
+export COMPOSE_PROJECT_MODE=mutagen
 ```
