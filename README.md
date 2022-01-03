@@ -1,4 +1,4 @@
-# Magento 2 Docker Environment
+# Magento 2 Docker Compose Environment
 
 ## Optional Pre-requirements (MacOs only)
 Configure and start nfs
@@ -12,8 +12,13 @@ Start the NFS server
 sudo nfsd restart
 ```
 
-## Usage
+## Optional Mutagen Integration (MacOs/Windows only)
+To use mutagen integration just define environment variable
+```bash
+export COMPOSE_PROJECT_MODE=mutagen
+```
 
+## Usage
 Export your composer auth tokens
 If you use github only
 ```bash
@@ -41,71 +46,60 @@ Clone this repo
 brew install digitalspacestdio/docker-compose-magento/docker-compose-magento
 ```
 
-Go to the working dir
+Create the working dir
 ```bash
+mkdir ~/magento2
 cd ~/magento2
 ```
 
 Clone your code to the `www` folder or create the new project:
 ```bash
-./docker-compose-wrapper run --rm cli composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=^2 /var/www
+docker-compose-magento run --rm cli composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=^2 /var/www
 ```
 
 Install dependencies (if needed)
 ```bash
-./docker-compose-wrapper run --rm cli composer install -o --no-interaction
+docker-compose-magento run --rm cli composer install -o --no-interaction
 ```
 
 Deploy sample data (if needed)
 ```bash
-./docker-compose-wrapper run --rm cli bin/magento sampledata:deploy
+docker-compose-magento run --rm cli bin/magento sampledata:deploy
 ```
 
 Install the application
 ```bash
-./docker-compose-wrapper run --rm cli bin/magento setup:install --backend-frontname="admin" --key="admin" --session-save="files" --db-host="database:3306" --db-name="magento2" --db-user="magento2" --db-password="magento2" --base-url="http://localhost:30280/" --base-url-secure="https://localhost:30280/" --admin-user="admin" --admin-password='$ecretPassw0rd' --admin-email="johndoe@example.com" --admin-firstname="John" --admin-lastname="Doe" --key="26765209cb05b93729898c892d18a8dd" --search-engine=elasticsearch7  --elasticsearch-host=elasticsearch --elasticsearch-port=9200
+docker-compose-magento run --rm cli bin/magento setup:install --backend-frontname="admin" --key="admin" --session-save="files" --db-host="database:3306" --db-name="magento2" --db-user="magento2" --db-password="magento2" --base-url="http://localhost:30280/" --base-url-secure="https://localhost:30280/" --admin-user="admin" --admin-password='$ecretPassw0rd' --admin-email="johndoe@example.com" --admin-firstname="John" --admin-lastname="Doe" --key="26765209cb05b93729898c892d18a8dd" --search-engine=elasticsearch7  --elasticsearch-host=elasticsearch --elasticsearch-port=9200
 ```
 
 Disable 2FA module (if needed)
 ```bash
-./docker-compose-wrapper run --rm cli bin/magento module:disable Magento_TwoFactorAuth
+docker-compose-magento run --rm cli bin/magento module:disable Magento_TwoFactorAuth
 ```
 
 Disable FPC
 ```bash
-./docker-compose-wrapper run --rm cli bin/magento cache:disable full_page
+docker-compose-magento run --rm cli bin/magento cache:disable full_page
 ```
 
 Start the stack
 ```bash
-./docker-compose-wrapper up
+docker-compose-magento up
 ```
 
 Also you can start the stack in the background mode
 ```bash
-./docker-compose-wrapper up -d
+docker-compose-magento up -d
 ```
 
 > Application should be available by following link: http://localhost:30280/
 
 Stop the stack
 ```bash
-./docker-compose-wrapper down
+docker-compose-magento down
 ```
 
 Destroy the whole data
 ```bash
-./docker-compose-wrapper down -v
-```
-
-## Mutagen Integration
-Install the Mutagen
-```bash
-brew install mutagen-io/mutagen/mutagen
-```
-
-
-To use mutagen integration just define environment variable
-```bash
-export COMPOSE_PROJECT_MODE=mutagen
+docker-compose-magento down -v
 ```
