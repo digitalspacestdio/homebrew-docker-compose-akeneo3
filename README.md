@@ -1,5 +1,9 @@
 # Magento 2 Docker Compose Environment
 
+## Pre-requirements (MacOs/Linux/Windows)
+
+Install Homebrew by following guide https://docs.brew.sh/Installation
+
 ## Optional Pre-requirements (MacOs only)
 Configure and start nfs
 ```bash
