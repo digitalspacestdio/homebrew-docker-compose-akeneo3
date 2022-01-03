@@ -87,10 +87,10 @@ if [[ $COMPOSE_PROJECT_MODE == "mutagen" ]] && [[ -f "${COMPOSE_PROJECT_CONFIG_D
       docker volume rm ${COMPOSE_PROJECT_NAME}_appcode
     fi
   fi
-
+  MUTAGEN_SESSION_NAME=$(echo ${COMPOSE_PROJECT_NAME}-appcode | awk '{print tolower($0)}' | sed 's/[^0-9a-z]/-/g')
   if [[ $1 == "down" ]]; then
-    if mutagen sync list | grep -i "Name: ${COMPOSE_PROJECT_NAME}-appcode" > /dev/null 2>&1; then
-      mutagen sync terminate "${COMPOSE_PROJECT_NAME}-appcode"
+    if mutagen sync list | grep -i "Name: ${MUTAGEN_SESSION_NAME}" > /dev/null 2>&1; then
+      mutagen sync terminate "${MUTAGEN_SESSION_NAME}"
     fi
     WAIT_SYNC=""
   else
@@ -98,7 +98,6 @@ if [[ $COMPOSE_PROJECT_MODE == "mutagen" ]] && [[ -f "${COMPOSE_PROJECT_CONFIG_D
       ${DOCKER_COMPOSE_BIN} up -d mutagen
     fi
     DOCKER_CONTAINER_NAME_MUTAGEN=$(docker inspect -f '{{.Name}}' $(${DOCKER_COMPOSE_BIN} ps -q mutagen) | cut -c2-)
-    MUTAGEN_SESSION_NAME=$(echo ${COMPOSE_PROJECT_NAME}-appcode | awk '{print tolower($0)}' | sed 's/[^0-9a-z]/-/g')
     if ! mutagen sync list | grep -i "Name: ${MUTAGEN_SESSION_NAME}" > /dev/null 2>&1; then
       mutagen sync create --sync-mode=two-way-resolved --ignore-vcs --symlink-mode=ignore --name=${MUTAGEN_SESSION_NAME} "$COMPOSE_PROJECT_APPDIR" docker://linuxbrew@${DOCKER_CONTAINER_NAME_MUTAGEN}/var/www
     else
