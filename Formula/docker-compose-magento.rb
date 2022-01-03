@@ -6,6 +6,7 @@ class DockerComposeMagento < Formula
   revision 3
 
   depends_on 'coreutils'
+  depends_on 'rsync'
   depends_on 'mutagen-io/mutagen/mutagen'
 
   def install
