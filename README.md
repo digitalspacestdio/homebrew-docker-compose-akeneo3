@@ -1,7 +1,15 @@
 # Magento 2 Docker Compose Environment
 
-## Pre-requirements (MacOs/Linux/Windows)
+## Installation
+### Homebrew (MacOs/Linux/Windows)
 Install Homebrew by following guide https://docs.brew.sh/Installation
+
+
+### Formula
+Just install by the command
+```bash
+brew install digitalspacestdio/docker-compose-magento/docker-compose-magento
+```
 
 ## Usage
 Export your composer auth tokens
@@ -26,19 +34,9 @@ export COMPOSE_PROJECT_PHP_VERSION=7.4
 ```
 > following versions are supported: 7.2, 7.3, 7.4, 8.0
 
-Clone this repo
+Create the new project or navigate to exists
 ```bash
-brew install digitalspacestdio/docker-compose-magento/docker-compose-magento
-```
-
-Create the working dir
-```bash
-mkdir ~/magento2
-cd ~/magento2
-```
-
-Clone your code to the `www` folder or create the new project:
-```bash
+mkdir ~/magento2 && cd ~/magento2
 docker-compose-magento run --rm cli composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=^2 /var/www
 ```
 
@@ -67,17 +65,16 @@ Disable FPC
 docker-compose-magento run --rm cli bin/magento cache:disable full_page
 ```
 
-Start the stack
+Start the stack in the background mode
 ```bash
-docker-compose-magento up
+docker-compose-oroplatform up -d
 ```
 
-Also you can start the stack in the background mode
+Start the stack in the foreground mode
 ```bash
-docker-compose-magento up -d
+docker-compose-oroplatform up
 ```
-
-> Application should be available by following link: http://localhost:30280/
+> Application will be available by following link: http://localhost:30280/
 
 Stop the stack
 ```bash
