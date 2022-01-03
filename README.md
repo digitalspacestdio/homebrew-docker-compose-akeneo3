@@ -38,12 +38,12 @@ export COMPOSE_PROJECT_PHP_VERSION=7.4
 
 Clone this repo
 ```bash
-git clone git@github.com:digitalspacestdio/docker-env-magento2.git
+brew install digitalspacestdio/docker-compose-magento/docker-compose-magento
 ```
 
 Go to the working dir
 ```bash
-cd docker-env-magento2
+cd ~/magento2
 ```
 
 Clone your code to the `www` folder or create the new project:
