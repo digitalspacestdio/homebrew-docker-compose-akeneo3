@@ -1,6 +1,6 @@
 require 'formula'
 
-class DockerVirtualbox < Formula
+class DockerComposeMagento < Formula
   url "https://github.com/digitalspacestdio/docker-compose-magento.git", :using => :git
   version "0.1.0"
 
