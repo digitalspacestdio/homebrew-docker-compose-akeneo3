@@ -108,7 +108,7 @@ Destroy the whole data
 docker-compose-magento down -v
 ```
 
-## Supported Environment Variablea
+## Supported Environment Variables
 * `COMPOSE_PROJECT_MODE` - (`mutagen`|`default`)
 * `COMPOSE_PROJECT_PHP_VERSION` - (`7.1`|`7.2`|`7.3`|`7.4`|`8.0`)
 * `COMPOSE_PROJECT_NAME` - by default the project directory will be used
