@@ -67,12 +67,12 @@ docker-compose-magento run --rm cli bin/magento cache:disable full_page
 
 Start the stack in the background mode
 ```bash
-docker-compose-oroplatform up -d
+docker-compose-magento up -d
 ```
 
 Start the stack in the foreground mode
 ```bash
-docker-compose-oroplatform up
+docker-compose-magento up
 ```
 > Application will be available by following link: http://localhost:30280/
 
