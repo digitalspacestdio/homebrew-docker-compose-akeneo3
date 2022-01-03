@@ -3,9 +3,10 @@ set -e
 set -x
 
 DIR=$(dirname $0)
+export PWD=$(pwd)
 
 find-up () {
-  path=${2-$(pwd)}
+  path=${2-$PWD}
   while [[ "$path" != "" && ! -e "$path/$1" ]]; do
     path=${path%/*}
   done
@@ -13,12 +14,12 @@ find-up () {
 }
 
 if [[ -z $COMPOSE_PROJECT_APPDIR ]]; then
-  COMPOSE_PROJECT_APPDIR=$(find-up composer.json $(pwd)/www)
+  export COMPOSE_PROJECT_APPDIR=$(find-up composer.json "$PWD/www")
 fi
 
 if [[ -z $COMPOSE_PROJECT_APPDIR ]]; then
-  if [ -z "$(ls -A $(pwd))" ]; then
-    COMPOSE_PROJECT_APPDIR=$(pwd)
+  if [ -z "$(ls -A $PWD)" ]; then
+    export COMPOSE_PROJECT_APPDIR="$PWD"
   else
     echo "Application root folder not found, and current directory is not empty, terminating..."
     exit 1
@@ -57,10 +58,10 @@ export COMPOSE_PROJECT_COMPOSER_AUTH=${COMPOSE_PROJECT_COMPOSER_AUTH-${COMPOSER_
 export COMPOSE_PROJECT_CONFIG_DIR="$HOME/.$(basename $0)/${COMPOSE_PROJECT_NAME}"
 
 if [[ ! -d "${COMPOSE_PROJECT_CONFIG_DIR}" ]];then
-    mkdir -p "${COMPOSE_PROJECT_CONFIG_DIR}" 
+    mkdir -p "${COMPOSE_PROJECT_CONFIG_DIR}"
 fi
 
-rsync -r "${DIR}/" "${COMPOSE_PROJECT_CONFIG_DIR}/" 
+rsync -r "${DIR}/" "${COMPOSE_PROJECT_CONFIG_DIR}/"
 
 DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN-$(which docker-compose)}";
 if [[ -f "${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose.yml" ]]; then
@@ -125,3 +126,4 @@ if [[ $1 == "up" ]]; then
 fi
 
 exec ${DOCKER_COMPOSE_BIN} "$@"
+
