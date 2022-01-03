@@ -162,7 +162,8 @@ services:
       retries: 5
 
   nginx:
-    image: 'nginx'
+    image: 'nginx:1.21-magento2'
+    build: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/nginx"
     depends_on:
       fpm:
         condition: service_healthy

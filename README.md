@@ -1,14 +1,7 @@
 # Magento 2 Docker Compose Environment
 
 ## Pre-requirements (MacOs/Linux/Windows)
-
 Install Homebrew by following guide https://docs.brew.sh/Installation
-
-## Optional Mutagen Integration (MacOs/Windows only)
-To use mutagen integration just define environment variable
-```bash
-export COMPOSE_PROJECT_MODE=mutagen
-```
 
 ## Usage
 Export your composer auth tokens
@@ -106,15 +99,3 @@ docker-compose-magento down -v
 * `COMPOSE_PROJECT_PORT_MYSQL` - `$COMPOSE_PROJECT_PORT_PREFIX` + `06` by default
 * `COMPOSE_PROJECT_PORT_ELASTICSEARCH` - `$COMPOSE_PROJECT_PORT_PREFIX` + `92` by default
 * `COMPOSE_PROJECT_PORT_MAIL_WEBGUI` - `$COMPOSE_PROJECT_PORT_PREFIX` + `25` by default
-
-## Using of NFS Mounts on MacOs
-Configure and start nfs
-```bash
-echo "$HOME -alldirs -mapall=$UID:20 localhost" | sudo tee -a /etc/exports
-echo "nfs.server.mount.require_resv_port = 0" | sudo tee -a /etc/nfs.conf
-```
-
-Start the NFS server
-```bash
-sudo nfsd restart
-```
