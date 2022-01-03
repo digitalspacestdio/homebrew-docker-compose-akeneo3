@@ -107,3 +107,14 @@ Destroy the whole data
 ```bash
 docker-compose-magento down -v
 ```
+
+## Supported Environment Variablea
+* `COMPOSE_PROJECT_MODE` - (`mutagen`|`default`)
+* `COMPOSE_PROJECT_PHP_VERSION` - (`7.1`|`7.2`|`7.3`|`7.4`|`8.0`)
+* `COMPOSE_PROJECT_NAME` - by default the project directory will be used
+* `COMPOSE_PROJECT_PORT_PREFIX` - `302` by default
+* `COMPOSE_PROJECT_PORT_HTTP` - `$COMPOSE_PROJECT_PORT_PREFIX` + `80` by default
+* `COMPOSE_PROJECT_PORT_XHGUI` - `$COMPOSE_PROJECT_PORT_PREFIX` + `81` by default
+* `COMPOSE_PROJECT_PORT_MYSQL` - `$COMPOSE_PROJECT_PORT_PREFIX` + `06` by default
+* `COMPOSE_PROJECT_PORT_ELASTICSEARCH` - `$COMPOSE_PROJECT_PORT_PREFIX` + `92` by default
+* `COMPOSE_PROJECT_PORT_MAIL_WEBGUI` - `$COMPOSE_PROJECT_PORT_PREFIX` + `25` by default
