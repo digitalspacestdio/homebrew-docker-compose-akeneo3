@@ -188,7 +188,7 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: "${COMPOSE_PROJECT_APPDIR:-${PWD}}"
+      device: "${COMPOSE_PROJECT_APPDIR:-$PWD}"
   npm:
     driver: local
   composer:
