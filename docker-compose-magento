@@ -17,9 +17,18 @@ if [[ -z $COMPOSE_PROJECT_APPDIR ]]; then
 fi
 
 if [[ -z $COMPOSE_PROJECT_APPDIR ]]; then
-  echo "Application root folder not found, terminating..."
-  exit 1
+  if [ -z "$(ls -A $(pwd))" ]; then
+    COMPOSE_PROJECT_APPDIR=$(pwd)
+  else
+    echo "Application root folder not found, and current directory is not empty, terminating..."
+    exit 1
+  fi
 fi
+
+if [[ ! -d "$COMPOSE_PROJECT_APPDIR" ]]; then
+  mkdir -p "$COMPOSE_PROJECT_APPDIR"
+fi
+
 
 cd "$COMPOSE_PROJECT_APPDIR"
 
@@ -45,29 +54,32 @@ export COMPOSE_PROJECT_PORT_MYSQL=${COMPOSE_PROJECT_PORT_MYSQL-"${COMPOSE_PROJEC
 export COMPOSE_PROJECT_PORT_ELASTICSEARCH=${COMPOSE_PROJECT_PORT_ELASTICSEARCH-"${COMPOSE_PROJECT_PORT_PREFIX}92"}
 export COMPOSE_PROJECT_PORT_MAIL_WEBGUI=${COMPOSE_PROJECT_PORT_MAIL_WEBGUI-"${COMPOSE_PROJECT_PORT_PREFIX}25"}
 export COMPOSE_PROJECT_COMPOSER_AUTH=${COMPOSE_PROJECT_COMPOSER_AUTH-${COMPOSER_AUTH-""}}
+export COMPOSE_PROJECT_CONFIG_DIR="$HOME/.$0/${COMPOSE_PROJECT_NAME}"
+
+if [[ ! -d "${COMPOSE_PROJECT_CONFIG_DIR}" ]];
+    mkdir -p "${COMPOSE_PROJECT_CONFIG_DIR}" 
+fi
+
+rsync -r "${DIR}/docker" "${COMPOSE_PROJECT_CONFIG_DIR}/" 
 
 DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN-$(which docker-compose)}";
-if [[ -f "${DIR}/docker-compose.yml" ]]; then
-  DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN} -f ${DIR}/docker-compose.yml"
+if [[ -f "${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose.yml" ]]; then
+  DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN} -f ${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose.yml"
 fi
 
 if [[ "$COMPOSE_PROJECT_MODE" == "mutagen" ]]; then
-  if [[ -f "${DIR}/docker-compose-mutagen.yml" ]]; then
-      DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN} -f ${DIR}/docker-compose-mutagen.yml"
+  if [[ -f "${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose-mutagen.yml" ]]; then
+      DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN} -f ${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose-mutagen.yml"
   fi
 else
   if [[ "$OSTYPE" == "darwin"* ]] && ps aux | grep -v 'grep' | grep nfsd > /dev/null 2>&1; then
-    if [[ -f "${DIR}/docker-compose-macos.yml" ]]; then
-      DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN} -f ${DIR}/docker-compose-macos.yml"
+    if [[ -f "${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose-macos.yml" ]]; then
+      DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN} -f ${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose-macos.yml"
     fi
   fi
 fi
 
-if [[ ! -d "$COMPOSE_PROJECT_APPDIR" ]]; then
-  mkdir -p "$COMPOSE_PROJECT_APPDIR"
-fi
-
-if [[ $COMPOSE_PROJECT_MODE == "mutagen" ]] && [[ -f "${DIR}/docker-compose-mutagen.yml" ]]; then
+if [[ $COMPOSE_PROJECT_MODE == "mutagen" ]] && [[ -f "${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose-mutagen.yml" ]]; then
   WAIT_SYNC="1"
   if docker volume ls | grep "^${COMPOSE_PROJECT_NAME}_appcode$" > /dev/null 2>&1; then
     if [[ $(docker volume inspect -f '{{ .Options.type }}' ${COMPOSE_PROJECT_NAME}_appcode) == "nfs" ]]; then
