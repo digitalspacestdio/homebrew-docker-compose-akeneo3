@@ -30,7 +30,6 @@ if [[ ! -d "$COMPOSE_PROJECT_APPDIR" ]]; then
   mkdir -p "$COMPOSE_PROJECT_APPDIR"
 fi
 
-
 cd "$COMPOSE_PROJECT_APPDIR"
 
 if [[ -f .dockenv ]]; then
