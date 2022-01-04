@@ -117,7 +117,7 @@ services:
       interval: 10s
 
   elasticsearch:
-    image: 'docker.elastic.co/elasticsearch/elasticsearch:7.6.2-magento2'
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:7.10.2-magento2'
     build: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/elasticsearch"
     volumes:
       - "elasticsearch-data:/usr/share/elasticsearch/data:delegated"
