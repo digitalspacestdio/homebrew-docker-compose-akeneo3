@@ -146,7 +146,7 @@ services:
       MYSQL_PASSWORD: 'magento2'
       MYSQL_DATABASE: 'magento2'
     volumes:
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/mysql/initdb.d:/docker-entrypoint-initdb.d:ro'
+      - '${COMPOSE_PROJECT_APPDIR:-$PWD}/.mysql.initdb.d:/docker-entrypoint-initdb.d:ro'
       - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/mysql/my.cnf:/etc/mysql/conf.d/magento2.cnf:ro'
       - 'mysql-data:/var/lib/mysql:delegated'
     ports:
