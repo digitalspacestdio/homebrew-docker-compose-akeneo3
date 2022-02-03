@@ -135,7 +135,7 @@ services:
       retries: 5
 
   database:
-    image: 'mysql:8'
+    image: 'mariadb:10.4'
     command: '--default-authentication-plugin=mysql_native_password'
     cap_add:
       - SYS_NICE # CAP_SYS_NICE
