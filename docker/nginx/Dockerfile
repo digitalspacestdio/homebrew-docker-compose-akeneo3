@@ -10,4 +10,7 @@ ARG nginx_gid=1000
 # nginx. This is where we override their respective uid and guid to something
 # else that lines up better with file permissions.
 # The -o switch allows reusing an existing user id
+
+ADD 40-tune-fastcgi_params.sh /docker-entrypoint.d/40-tune-fastcgi_params.sh
+RUN chmod +x /docker-entrypoint.d/40-tune-fastcgi_params.sh
 RUN usermod -u $nginx_uid -o www-data && groupmod -g $nginx_gid -o www-data
