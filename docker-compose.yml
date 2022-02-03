@@ -134,6 +134,17 @@ services:
       interval: 5s
       retries: 5
 
+  redis:
+    image: 'redis:6.0-bullseye'
+    command: 'redis-server --save "" --loglevel warning --maxmemory 16mb --maxmemory-policy allkeys-lru'
+    networks:
+      - 'appnet'
+    restart: on-failure:3
+    healthcheck:
+      test: /bin/bash -c "</dev/tcp/localhost/6379"
+      start_period: 30s
+      interval: 5s
+
   database:
     image: 'mariadb:10.4'
     command: '--default-authentication-plugin=mysql_native_password'
