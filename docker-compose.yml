@@ -114,6 +114,10 @@ services:
       interval: 10s
 
   elasticsearch:
+    build:
+      context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/elasticsearch"
+      args:
+        COMPOSE_PROJECT_ELASTICSEARCH_VERSION: ${COMPOSE_PROJECT_ELASTICSEARCH_VERSION:-7.10.2}
     build: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/elasticsearch"
     volumes:
       - "elasticsearch-data:/usr/share/elasticsearch/data:delegated"
