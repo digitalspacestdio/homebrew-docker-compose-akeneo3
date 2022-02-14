@@ -4,10 +4,10 @@ sed -i 's/fastcgi_param  REMOTE_ADDR.*/fastcgi_param  REMOTE_ADDR        127.0.0
 
 tee -a /etc/nginx/fastcgi_params <<FASTCGI_PARAM_HTTPS
 
-set $fcgi_https $https;
-if ($http_x_forwarded_proto = "https") {
-    set $fcgi_https on;
+set \$fcgi_https \$https;
+if (\$http_x_forwarded_proto = "https") {
+    set \$fcgi_https on;
 }
-fastcgi_param HTTPS $fcgi_https;
+fastcgi_param HTTPS \$fcgi_https;
 
 FASTCGI_PARAM_HTTPS
