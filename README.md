@@ -46,17 +46,17 @@ Navigate to the directory
 cd ~/magento2
 ```
 
-Create the new project or navigate to exists
+Create the project
 ```bash
 docker-compose-magento run --rm cli composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=^2 /var/www
 ```
 
-Install dependencies (if needed)
+Install dependencies
 ```bash
 docker-compose-magento run --rm cli composer install -o --no-interaction
 ```
 
-Deploy sample data (if needed)
+Deploy sample data
 ```bash
 docker-compose-magento run --rm cli bin/magento sampledata:deploy
 ```
