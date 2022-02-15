@@ -34,9 +34,20 @@ export COMPOSE_PROJECT_PHP_VERSION=7.4
 ```
 > following versions are supported: 7.1, 7.2, 7.3, 7.4, 8.0, 8.1
 
+## Create New Magento Project With Sample Data
+
+Create the projet directory
+```bash
+mkdir ~/magento2
+```
+
+Navigate to the directory
+```bash
+cd ~/magento2
+```
+
 Create the new project or navigate to exists
 ```bash
-mkdir ~/magento2 && cd ~/magento2
 docker-compose-magento run --rm cli composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=^2 /var/www
 ```
 
