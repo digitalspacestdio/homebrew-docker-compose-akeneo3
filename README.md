@@ -1,12 +1,27 @@
 # Magento 2 Docker Compose Environment
+**Supported Systems**
+* MacOs (Intel or M1)
+* Linux (AMD64, ARM64)
+* Windows via WSL2 (AMD64)
 
 ## Installation
+### Docker
+**MacOs**  
+Install Docker for Mac: https://docs.docker.com/desktop/mac/install/  
+
+**Linux**  
+Install Docker Engine: https://docs.docker.com/engine/install/ubuntu/  
+Install Docker Compose https://docs.docker.com/compose/install/  
+
+**Windows**  
+Follow this guide: https://docs.docker.com/desktop/windows/wsl/  
+
+
 ### Homebrew (MacOs/Linux/Windows)
 Install Homebrew by following guide https://docs.brew.sh/Installation
 
-
 ### Formula
-Just install by the command
+Install the formula via homebrew
 ```bash
 brew install digitalspacestdio/docker-compose-magento/docker-compose-magento
 ```
