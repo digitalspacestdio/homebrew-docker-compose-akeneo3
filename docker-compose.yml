@@ -42,6 +42,7 @@ services:
   cli:
     image: "digitalspacestudio/php:${COMPOSE_PROJECT_PHP_VERSION-7.4}"
     user: root
+    command: /usr/bin/true
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
     volumes:
@@ -194,6 +195,23 @@ services:
       start_period: 60s
       interval: 5s
       retries: 5
+
+  database-cli:
+    image: 'mariadb:10.4'
+    command: /usr/bin/true
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
+    environment:
+      - 'DATABASE_HOST=database'
+      - 'DATABASE_PORT=3306'
+      - 'DATABASE_USER=magento2'
+      - 'DATABASE_PASSWORD=magento2'
+      - 'DATABASE_NAME=magento2'
+    networks:
+      - 'appnet'
+    depends_on:
+      database:
+        condition: service_healthy
 
   nginx:
     build: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/nginx"
