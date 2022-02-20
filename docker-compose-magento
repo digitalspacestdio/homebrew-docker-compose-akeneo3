@@ -129,7 +129,7 @@ if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql' > /dev/null; then
   fi
   DB_DUMP=$(realpath $2)
   DB_DUMP_BASENAME=$(echo "${DB_DUMP##*/}")
-  if "$DB_DUMP_BASENAME" == "*.gz"; then
+  if [[ "$DB_DUMP_BASENAME" == "*.gz" ]]; then
     MYSQL_CMD="cat /${DB_DUMP_BASENAME} | gunzip | MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME"
   else
     MYSQL_CMD="cat /${DB_DUMP_BASENAME} | MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME"
