@@ -118,7 +118,7 @@ if [[ $1 == "up" ]]; then
   printf "\033[0;37m[${COMPOSE_PROJECT_NAME}] Mysql address: 127.0.0.1:${COMPOSE_PROJECT_PORT_MYSQL}\033[0m\n"
 fi
 
-if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql'; then
+if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql' > /dev/null; then
   if [[ -z $2 ]]; then
     echo "Data file was not provided"
     exit 1
@@ -127,7 +127,7 @@ if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql'; then
     echo "Data file '$2' does not readable"
     exit 1
   fi
-  DB_DUMP=$(readlink $2)
+  DB_DUMP=$(realpath $2)
   DB_DUMP_BASENAME=$(echo "${DB_DUMP##*/}")
   if "$DB_DUMP_BASENAME" == "*.gz"; then
     MYSQL_CMD="export MYSQL_PWD=root; cat /${DB_DUMP_BASENAME} | gunzip | mysql -hdatabase -uroot -p magento2"
