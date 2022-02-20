@@ -130,9 +130,9 @@ if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql' > /dev/null; then
   DB_DUMP=$(realpath $2)
   DB_DUMP_BASENAME=$(echo "${DB_DUMP##*/}")
   if "$DB_DUMP_BASENAME" == "*.gz"; then
-    MYSQL_CMD="export MYSQL_PWD=root; cat /${DB_DUMP_BASENAME} | gunzip | mysql -hdatabase -uroot -p magento2"
+    MYSQL_CMD="cat /${DB_DUMP_BASENAME} | gunzip | MYSQL_PWD=root mysql -hdatabase -uroot -p magento2"
   else
-    MYSQL_CMD="export MYSQL_PWD=root; cat /${DB_DUMP_BASENAME} | mysql -hdatabase -uroot -p magento2"
+    MYSQL_CMD="cat /${DB_DUMP_BASENAME} | MYSQL_PWD=root mysql -hdatabase -uroot -p magento2"
   fi
   exec ${DOCKER_COMPOSE_BIN} run --rm -v "${DB_DUMP}:/${DB_DUMP_BASENAME}" cli "$MYSQL_CMD"
 fi
