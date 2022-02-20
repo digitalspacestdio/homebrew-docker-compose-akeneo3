@@ -134,7 +134,7 @@ if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql' > /dev/null; then
   else
     MYSQL_CMD="cat /${DB_DUMP_BASENAME} | MYSQL_PWD=root mysql -hdatabase -uroot -p magento2"
   fi
-  exec ${DOCKER_COMPOSE_BIN} run --rm -v "${DB_DUMP}:/${DB_DUMP_BASENAME}" cli "bash -c '$MYSQL_CMD'"
+  exec ${DOCKER_COMPOSE_BIN} run --rm -v "${DB_DUMP}:/${DB_DUMP_BASENAME}" cli "bash -c $MYSQL_CMD"
 fi
 
 exec ${DOCKER_COMPOSE_BIN} "$@"
