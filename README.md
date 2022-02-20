@@ -123,9 +123,19 @@ Install dependencies
 docker-compose-magento run --rm cli composer install -o --no-interaction
 ```
 
-Configure the application
+Import database dump (supports `*.sql` and `*.sql.gz` files)
 ```bash
-docker-compose-magento run --rm cli bin/magento config:set --backend-frontname="admin" --key="admin" --session-save="files" --db-host="database:3306" --db-name="magento2" --db-user="magento2" --db-password="magento2" --base-url="http://localhost:30280/" --base-url-secure="https://localhost:30280/" --admin-user="admin" --admin-password='$ecretPassw0rd' --admin-email="johndoe@example.com" --admin-firstname="John" --admin-lastname="Doe" --key="26765209cb05b93729898c892d18a8dd" --search-engine=elasticsearch7  --elasticsearch-host=elasticsearch --elasticsearch-port=9200
+docker-compose-magento database-import /path/to/dump.sql.gz
+```
+
+Configure the application database credentials
+```bash
+docker-compose-magento database-config
+```
+
+Configure the application redis credentials
+```bash
+docker-compose-magento redis-config
 ```
 
 Disable 2FA module (if needed)
@@ -147,7 +157,7 @@ Start the stack in the foreground mode
 ```bash
 docker-compose-magento up
 ```
-> Application will be available by following link: http://localhost:30280/
+> Application will be available by following link: http://localhost:30280/admin
 
 Stop the stack
 ```bash
