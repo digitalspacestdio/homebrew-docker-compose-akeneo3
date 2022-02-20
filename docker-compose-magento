@@ -138,16 +138,15 @@ if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql' > /dev/null; then
 fi
 
 if echo $1 | grep -i 'app\|application\|setup' | grep -i 'config\|configure' > /dev/null; then
-  ${DOCKER_COMPOSE_BIN} run --rm cli bash <<CONFIG
-bin/magento setup:config:set --quiet '--backend-frontname=admin'
-bin/magento setup:config:set --quiet '--db-host=\$DATABASE_HOST'
-bin/magento setup:config:set --quiet '--db-user=\$DATABASE_USER'
-bin/magento setup:config:set --quiet '--db-password=\$DATABASE_PASSWORD'
-bin/magento setup:config:set --quiet '--db-name=\$DATABASE_NAME'
+  exec ${DOCKER_COMPOSE_BIN} run --rm cli bash <<CONFIG
+set -x
+set -e
+bin/magento setup:config:set --quiet --backend-frontname admin
+bin/magento setup:config:set --quiet --db-host \$DATABASE_HOST --db-user \$DATABASE_USER --db-password \$DATABASE_PASSWORD --db-name \$DATABASE_NAME
+bin/magento setup:config:set --quiet --cache-backend=redis --cache-backend-redis-server=redis --cache-backend-redis-port=6379 --cache-backend-redis-db=0
+bin/magento setup:config:set --quiet --session-save=redis --session-save-redis-host=redis --session-save-redis-port=6379 --session-save-redis-log-level=4 --session-save-redis-db=2
 bin/magento app:config:import --quiet
-bin/magento config:set --lock-env 'web/unsecure/base_url' 'http://localhost:30280/'
-bin/magento config:set --lock-env 'web/secure/base_url' 'https://localhost:30280/'
-bin/magento config:set --lock-env 'web/cookie/cookie_domain' 'localhost'
+
 CONFIG
 fi
 
