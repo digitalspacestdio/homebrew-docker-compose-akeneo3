@@ -1,12 +1,27 @@
 # Magento 2 Docker Compose Environment
+**Supported Systems**
+* MacOs (Intel or M1)
+* Linux (AMD64, ARM64)
+* Windows via WSL2 (AMD64)
 
 ## Installation
+### Docker
+**MacOs**  
+Install Docker for Mac: https://docs.docker.com/desktop/mac/install/  
+
+**Linux**  
+Install Docker Engine: https://docs.docker.com/engine/install/ubuntu/  
+Install Docker Compose https://docs.docker.com/compose/install/  
+
+**Windows**  
+Follow this guide: https://docs.docker.com/desktop/windows/wsl/  
+
+
 ### Homebrew (MacOs/Linux/Windows)
 Install Homebrew by following guide https://docs.brew.sh/Installation
 
-
 ### Formula
-Just install by the command
+Install the formula via homebrew
 ```bash
 brew install digitalspacestdio/docker-compose-magento/docker-compose-magento
 ```
@@ -34,18 +49,29 @@ export COMPOSE_PROJECT_PHP_VERSION=7.4
 ```
 > following versions are supported: 7.1, 7.2, 7.3, 7.4, 8.0, 8.1
 
-Create the new project or navigate to exists
+## Create New Magento Project With Sample Data
+
+Create the projet directory
 ```bash
-mkdir ~/magento2 && cd ~/magento2
+mkdir ~/magento2
+```
+
+Navigate to the directory
+```bash
+cd ~/magento2
+```
+
+Create the project
+```bash
 docker-compose-magento run --rm cli composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=^2 /var/www
 ```
 
-Install dependencies (if needed)
+Install dependencies
 ```bash
 docker-compose-magento run --rm cli composer install -o --no-interaction
 ```
 
-Deploy sample data (if needed)
+Deploy sample data
 ```bash
 docker-compose-magento run --rm cli bin/magento sampledata:deploy
 ```
