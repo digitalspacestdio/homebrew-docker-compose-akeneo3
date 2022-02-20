@@ -3,6 +3,9 @@ version: '3.4'
 services:
   fpm:
     image: "digitalspacestudio/php:${COMPOSE_PROJECT_PHP_VERSION-7.4}"
+    container_name: ${COMPOSE_PROJECT_NAME}_fpm
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
     user: root
     volumes:
       - 'appcode:/var/www'
@@ -39,6 +42,8 @@ services:
   cli:
     image: "digitalspacestudio/php:${COMPOSE_PROJECT_PHP_VERSION-7.4}"
     user: root
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
     volumes:
       - 'appcode:/var/www'
       - 'npm:/home/linuxbrew/.npm'
@@ -64,6 +69,9 @@ services:
 
   xhgui:
     image: "xhgui/xhgui:0.18.1"
+    container_name: ${COMPOSE_PROJECT_NAME}_xhgui
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
     volumes:
       - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/xhgui/config:/var/www/xhgui/config'
       - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/xhgui/nginx.conf:/etc/nginx/conf.d/default.conf:ro'
@@ -85,6 +93,9 @@ services:
 
   mail:
     image: "mailhog/mailhog"
+    container_name: ${COMPOSE_PROJECT_NAME}_mail
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
     ports:
       - "${COMPOSE_PROJECT_PORT_MAIL_WEBGUI:-8025}:8025"
     networks:
@@ -99,6 +110,9 @@ services:
     image: percona/percona-server-mongodb:4.4
     # (case sensitive) engine: mmapv1, rocksdb, wiredTiger, inMemory
     command: --storageEngine=wiredTiger
+    container_name: ${COMPOSE_PROJECT_NAME}_mongodb
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
     environment:
       - MONGO_INITDB_DATABASE=xhprof
     volumes:
@@ -119,6 +133,9 @@ services:
       args:
         COMPOSE_PROJECT_ELASTICSEARCH_VERSION: ${COMPOSE_PROJECT_ELASTICSEARCH_VERSION:-7.10.2}
     build: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/elasticsearch"
+    container_name: ${COMPOSE_PROJECT_NAME}_elasticsearch
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
     volumes:
       - "elasticsearch-data:/usr/share/elasticsearch/data:delegated"
     environment:
@@ -138,6 +155,9 @@ services:
   redis:
     image: 'redis:6.0-bullseye'
     command: 'redis-server --save "" --loglevel warning --maxmemory 16mb --maxmemory-policy allkeys-lru'
+    container_name: ${COMPOSE_PROJECT_NAME}_redis
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
     networks:
       - 'appnet'
     restart: always
@@ -149,6 +169,9 @@ services:
   database:
     image: 'mariadb:10.4'
     command: '--default-authentication-plugin=mysql_native_password'
+    container_name: ${COMPOSE_PROJECT_NAME}_database
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
     cap_add:
       - SYS_NICE # CAP_SYS_NICE
     environment:
@@ -174,6 +197,9 @@ services:
 
   nginx:
     build: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/nginx"
+    container_name: ${COMPOSE_PROJECT_NAME}_nginx
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
     depends_on:
       fpm:
         condition: service_healthy
