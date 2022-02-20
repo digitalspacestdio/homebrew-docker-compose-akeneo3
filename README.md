@@ -49,7 +49,7 @@ export COMPOSE_PROJECT_PHP_VERSION=7.4
 ```
 > following versions are supported: 7.1, 7.2, 7.3, 7.4, 8.0, 8.1
 
-## Create New Magento Project With Sample Data
+## Use Case 1: New project from scratch with sample data
 
 Create the projet directory
 ```bash
@@ -111,6 +111,54 @@ Destroy the whole data
 ```bash
 docker-compose-magento down -v
 ```
+
+## Use Case 2: Already exists project with sql dump
+Navigate to the project directory
+```bash
+cd ~/my-awesome-magento-project
+```
+
+Install dependencies
+```bash
+docker-compose-magento run --rm cli composer install -o --no-interaction
+```
+
+Configure the application
+```bash
+docker-compose-magento run --rm cli bin/magento config:set --backend-frontname="admin" --key="admin" --session-save="files" --db-host="database:3306" --db-name="magento2" --db-user="magento2" --db-password="magento2" --base-url="http://localhost:30280/" --base-url-secure="https://localhost:30280/" --admin-user="admin" --admin-password='$ecretPassw0rd' --admin-email="johndoe@example.com" --admin-firstname="John" --admin-lastname="Doe" --key="26765209cb05b93729898c892d18a8dd" --search-engine=elasticsearch7  --elasticsearch-host=elasticsearch --elasticsearch-port=9200
+```
+
+Disable 2FA module (if needed)
+```bash
+docker-compose-magento run --rm cli bin/magento module:disable Magento_TwoFactorAuth
+```
+
+Disable FPC
+```bash
+docker-compose-magento run --rm cli bin/magento cache:disable full_page
+```
+
+Start the stack in the background mode
+```bash
+docker-compose-magento up -d
+```
+
+Start the stack in the foreground mode
+```bash
+docker-compose-magento up
+```
+> Application will be available by following link: http://localhost:30280/
+
+Stop the stack
+```bash
+docker-compose-magento down
+```
+
+Destroy the whole data
+```bash
+docker-compose-magento down -v
+```
+
 
 ## Supported Environment Variables
 * `COMPOSE_PROJECT_MODE` - (`mutagen`|`default`)
