@@ -153,7 +153,7 @@ if echo $1 | grep -i 'redis' | grep -i 'setup\|config\|configure' > /dev/null; t
 set -x
 set -e
 bin/magento setup:config:set --quiet --cache-backend redis --cache-backend-redis-server redis --cache-backend-redis-port 6379 --cache-backend-redis-db 0
-bin/magento setup:config:set --quiet --session-save redis --session-save-redis-host redis --session-save-redis-port 6379 --session-save-redis-db 2
+bin/magento setup:config:set --quiet --session-save redis --session-save-redis-host redis --session-save-redis-port 6379 --session-save-redis-db 6
 bin/magento app:config:import --quiet
 
 COMMANDS
