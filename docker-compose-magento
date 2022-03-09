@@ -130,7 +130,7 @@ if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql' > /dev/null; then
   DB_DUMP=$(realpath $2)
   DB_DUMP_BASENAME=$(echo "${DB_DUMP##*/}")
   if echo ${DB_DUMP_BASENAME} | grep -i 'sql\.gz$' > /dev/null; then
-    MYSQL_CMD="cat /${DB_DUMP_BASENAME} | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/DEFINER=CURRENT_USER \*/' | gunzip | MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME"
+    MYSQL_CMD="cat /${DB_DUMP_BASENAME} | gunzip | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/DEFINER=CURRENT_USER \*/' | MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME"
   else
     MYSQL_CMD="cat /${DB_DUMP_BASENAME} | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/DEFINER=CURRENT_USER \*/' | MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME"
   fi
