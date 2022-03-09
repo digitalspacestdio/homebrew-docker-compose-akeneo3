@@ -7,7 +7,7 @@ class DockerComposeMagento < Formula
 
   depends_on 'coreutils'
   depends_on 'rsync'
-  depends_on 'mutagen-io/mutagen/mutagen'
+  depends_on 'mutagen-io/mutagen/mutagen' if OS.mac?
 
   def install
     #bin.install "docker-compose-magento"
