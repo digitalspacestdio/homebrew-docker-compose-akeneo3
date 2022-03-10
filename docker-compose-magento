@@ -172,7 +172,7 @@ if echo $1 | grep -i 'xhprof' | grep -i 'patch' > /dev/null; then
   exec ${DOCKER_COMPOSE_BIN} run --rm cli bash <<COMMANDS
 set -x
 set -e
-patch -p0 -d ${COMPOSE_PROJECT_APPDIR} < xhprof.patch
+patch -p0 -d ${COMPOSE_PROJECT_APPDIR} < "${COMPOSE_PROJECT_CONFIG_DIR}/xhprof.patch"
 COMMANDS
 fi
 
@@ -180,7 +180,7 @@ if echo $1 | grep -i 'xhprof' | grep -i 'revert' > /dev/null; then
   exec ${DOCKER_COMPOSE_BIN} run --rm cli bash <<COMMANDS
 set -x
 set -e
-patch -R -p0 -d ${COMPOSE_PROJECT_APPDIR} < xhprof.patch
+patch -R -p0 -d ${COMPOSE_PROJECT_APPDIR} < "${COMPOSE_PROJECT_CONFIG_DIR}/xhprof.patch"
 COMMANDS
 fi
 
