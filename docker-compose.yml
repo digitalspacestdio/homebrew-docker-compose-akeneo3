@@ -46,7 +46,7 @@ services:
   cli:
     image: "digitalspacestudio/php:${COMPOSE_PROJECT_PHP_VERSION-7.4}"
     user: root
-    command: /usr/bin/true
+    command: /bin/true
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
     volumes:
@@ -225,7 +225,7 @@ services:
 
   database-cli:
     image: 'mariadb:10.4'
-    command: /usr/bin/true
+    command: /bin/true
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
     environment:
