@@ -174,7 +174,6 @@ Destroy the whole data
 docker-compose-magento down -v
 ```
 
-
 ## Supported Environment Variables
 * `COMPOSE_PROJECT_MODE` - (`mutagen`|`default`)
 * `COMPOSE_PROJECT_PHP_VERSION` - (`7.1`|`7.2`|`7.3`|`7.4`|`8.0`|`8.1`)
@@ -186,3 +185,20 @@ docker-compose-magento down -v
 * `COMPOSE_PROJECT_PORT_MYSQL` - `$COMPOSE_PROJECT_PORT_PREFIX` + `06` by default
 * `COMPOSE_PROJECT_PORT_ELASTICSEARCH` - `$COMPOSE_PROJECT_PORT_PREFIX` + `92` by default
 * `COMPOSE_PROJECT_PORT_MAIL_WEBGUI` - `$COMPOSE_PROJECT_PORT_PREFIX` + `25` by default
+
+## Configure the XhProf in the project
+
+Add required packages 
+```bash
+docker-compose-magento run --rm cli composer require perftools/php-profiler 
+docker-compose-magento run --rm cli composer require perftools/xhgui-collector
+docker-compose-magento run --rm cli composer require alcaeus/mongo-php-adapter
+```
+
+Apply the patch
+
+```bash
+docker-compose-magento xhprof-patch
+```
+
+
