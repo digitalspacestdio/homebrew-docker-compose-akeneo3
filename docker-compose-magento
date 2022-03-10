@@ -158,5 +158,15 @@ bin/magento app:config:import --quiet
 COMMANDS
 fi
 
+if echo $1 | grep -i 'es\|elastic' | grep -i 'setup\|config\|configure' > /dev/null; then
+  exec ${DOCKER_COMPOSE_BIN} run --rm cli bash <<COMMANDS
+set -x
+set -e
+bin/magento config:set catalog/search/elasticsearch7_server_hostname elasticsearch
+bin/magento config:set catalog/search/elasticsearch7_server_port 9200
+
+COMMANDS
+fi
+
 exec ${DOCKER_COMPOSE_BIN} "$@"
 

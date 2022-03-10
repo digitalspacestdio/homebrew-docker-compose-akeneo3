@@ -133,9 +133,14 @@ Configure the application database credentials
 docker-compose-magento database-config
 ```
 
-Configure the application redis credentials
+Configure the application redis settings
 ```bash
 docker-compose-magento redis-config
+```
+
+Configure the application elasticsearch settings
+```bash
+docker-compose-magento elasticsearch-config
 ```
 
 Disable 2FA module (if needed)
