@@ -201,4 +201,8 @@ Apply the patch
 docker-compose-magento xhprof-patch
 ```
 
+To revert the patch run:
+```bash
+docker-compose-magento xhprof-revert
+```
 
