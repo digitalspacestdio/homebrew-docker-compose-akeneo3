@@ -169,6 +169,10 @@ bin/magento config:set catalog/search/elasticsearch7_server_port 9200
 COMMANDS
 fi
 
+if echo $1 | grep -i 'composer' > /dev/null; then
+  exec ${DOCKER_COMPOSE_BIN} run --rm cli bash -c "exec $@"
+fi
+
 if echo $1 | grep -i 'xhprof' | grep -i 'patch' > /dev/null; then
   exec bash <<COMMANDS
 set -x
