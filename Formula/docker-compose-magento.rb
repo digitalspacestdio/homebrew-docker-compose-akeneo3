@@ -3,7 +3,7 @@ require 'formula'
 class DockerComposeMagento < Formula
   url "https://github.com/digitalspacestdio/homebrew-docker-compose-magento.git", :using => :git
   version "0.1.11"
-  revision 9
+  revision 10
 
   depends_on 'gpatch'
   depends_on 'coreutils'
