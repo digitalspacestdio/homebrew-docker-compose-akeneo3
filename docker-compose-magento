@@ -169,6 +169,15 @@ bin/magento config:set catalog/search/elasticsearch7_server_port 9200
 COMMANDS
 fi
 
+if echo $1 | grep -i '^mysql' > /dev/null; then
+  for i in "$@"; do
+      i="${i//\\/\\\\}"
+      i="${i//$/\\$}"
+      C="$C \"${i//\"/\\\"}\""
+  done
+  MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME
+  exec ${DOCKER_COMPOSE_BIN} run --rm database-cli bash -c "$MYSQL_CMD"
+fi
 
 if echo $1 | grep -i '^composer\|bin/\|npm\|php\|node\|yarn\|bash' > /dev/null; then
   for i in "$@"; do
