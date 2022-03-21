@@ -63,32 +63,32 @@ cd ~/magento2
 
 Create the project
 ```bash
-docker-compose-magento run --rm cli composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=^2 /var/www
+docker-compose-magento composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=^2 /var/www
 ```
 
 Install dependencies
 ```bash
-docker-compose-magento run --rm cli composer install -o --no-interaction
+docker-compose-magento composer install -o --no-interaction
 ```
 
 Deploy sample data
 ```bash
-docker-compose-magento run --rm cli bin/magento sampledata:deploy
+docker-compose-magento bin/magento sampledata:deploy
 ```
 
 Install the application
 ```bash
-docker-compose-magento run --rm cli bin/magento setup:install --backend-frontname="admin" --key="admin" --session-save="files" --db-host="database:3306" --db-name="magento2" --db-user="magento2" --db-password="magento2" --base-url="http://localhost:30280/" --base-url-secure="https://localhost:30280/" --admin-user="admin" --admin-password='$ecretPassw0rd' --admin-email="johndoe@example.com" --admin-firstname="John" --admin-lastname="Doe" --key="26765209cb05b93729898c892d18a8dd" --search-engine=elasticsearch7  --elasticsearch-host=elasticsearch --elasticsearch-port=9200
+docker-compose-magento bin/magento setup:install --backend-frontname="admin" --key="admin" --session-save="files" --db-host="database:3306" --db-name="magento2" --db-user="magento2" --db-password="magento2" --base-url="http://localhost:30280/" --base-url-secure="https://localhost:30280/" --admin-user="admin" --admin-password='$ecretPassw0rd' --admin-email="johndoe@example.com" --admin-firstname="John" --admin-lastname="Doe" --key="26765209cb05b93729898c892d18a8dd" --search-engine=elasticsearch7  --elasticsearch-host=elasticsearch --elasticsearch-port=9200
 ```
 
 Disable 2FA module (if needed)
 ```bash
-docker-compose-magento run --rm cli bin/magento module:disable Magento_TwoFactorAuth
+docker-compose-magento bin/magento module:disable Magento_TwoFactorAuth
 ```
 
 Disable FPC
 ```bash
-docker-compose-magento run --rm cli bin/magento cache:disable full_page
+docker-compose-magento bin/magento cache:disable full_page
 ```
 
 Start the stack in the background mode
@@ -120,7 +120,7 @@ cd ~/my-awesome-magento-project
 
 Install dependencies
 ```bash
-docker-compose-magento run --rm cli composer install -o --no-interaction
+docker-compose-magento composer install -o --no-interaction
 ```
 
 Import database dump (supports `*.sql` and `*.sql.gz` files)
@@ -145,12 +145,12 @@ docker-compose-magento elasticsearch-config
 
 Disable 2FA module (if needed)
 ```bash
-docker-compose-magento run --rm cli bin/magento module:disable Magento_TwoFactorAuth
+docker-compose-magento bin/magento module:disable Magento_TwoFactorAuth
 ```
 
 Disable FPC
 ```bash
-docker-compose-magento run --rm cli bin/magento cache:disable full_page
+docker-compose-magento bin/magento cache:disable full_page
 ```
 
 Start the stack in the background mode
@@ -190,9 +190,9 @@ docker-compose-magento down -v
 
 Add required packages 
 ```bash
-docker-compose-magento run --rm cli composer require perftools/php-profiler 
-docker-compose-magento run --rm cli composer require perftools/xhgui-collector
-docker-compose-magento run --rm cli composer require alcaeus/mongo-php-adapter
+docker-compose-magento composer require perftools/php-profiler 
+docker-compose-magento composer require perftools/xhgui-collector
+docker-compose-magento composer require alcaeus/mongo-php-adapter
 ```
 
 Apply the patch
