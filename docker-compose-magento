@@ -175,7 +175,7 @@ if echo $1 | grep -i '^mysql' > /dev/null; then
       i="${i//$/\\$}"
       C="$C \"${i//\"/\\\"}\""
   done
-  MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME
+  MYSQL_CMD="MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME"
   exec ${DOCKER_COMPOSE_BIN} run --rm database-cli bash -c "$MYSQL_CMD"
 fi
 
