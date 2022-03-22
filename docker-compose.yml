@@ -82,7 +82,7 @@ services:
         condition: service_healthy
 
   xhgui:
-    image: "xhgui/xhgui:0.18.1"
+    image: "xhgui/xhgui:0.20"
     container_name: ${COMPOSE_PROJECT_NAME}_xhgui
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
@@ -106,7 +106,7 @@ services:
       interval: 5s
 
   mail:
-    image: "mailhog/mailhog"
+    image: "cd2team/mailhog"
     container_name: ${COMPOSE_PROJECT_NAME}_mail
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
