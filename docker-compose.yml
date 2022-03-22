@@ -196,7 +196,7 @@ services:
 
   database:
     image: 'mariadb:10.4'
-    command: '--default-authentication-plugin=mysql_native_password'
+    command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
     container_name: ${COMPOSE_PROJECT_NAME}_database
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
