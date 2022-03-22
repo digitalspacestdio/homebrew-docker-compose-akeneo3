@@ -121,7 +121,7 @@ services:
       interval: 5s
 
   mongodb:
-    image: percona/percona-server-mongodb:4.4
+    image: mongo:4.4
     # (case sensitive) engine: mmapv1, rocksdb, wiredTiger, inMemory
     command: --storageEngine=wiredTiger
     container_name: ${COMPOSE_PROJECT_NAME}_mongodb
