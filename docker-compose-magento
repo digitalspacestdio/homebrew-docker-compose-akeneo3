@@ -144,7 +144,6 @@ set -x
 set -e
 bin/magento setup:config:set --quiet --db-host \$DATABASE_HOST --db-user \$DATABASE_USER --db-password \$DATABASE_PASSWORD --db-name \$DATABASE_NAME
 bin/magento app:config:import --quiet
-
 COMMANDS
 fi
 
@@ -155,7 +154,6 @@ set -e
 bin/magento setup:config:set --quiet --cache-backend redis --cache-backend-redis-server redis --cache-backend-redis-port 6379 --cache-backend-redis-db 0
 bin/magento setup:config:set --quiet --session-save redis --session-save-redis-host redissession --session-save-redis-port 6379 --session-save-redis-db 0
 bin/magento app:config:import --quiet
-
 COMMANDS
 fi
 
@@ -165,7 +163,6 @@ set -x
 set -e
 bin/magento config:set catalog/search/elasticsearch7_server_hostname elasticsearch
 bin/magento config:set catalog/search/elasticsearch7_server_port 9200
-
 COMMANDS
 fi
 
