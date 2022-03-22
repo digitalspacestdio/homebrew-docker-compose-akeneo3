@@ -1,10 +1,11 @@
 # Magento 2 Docker Compose Environment
+> The easy magento environment for Dummies
 **Supported Systems**
-* MacOs (Intel or M1)
+* MacOs (Intel, Apple M1)
 * Linux (AMD64, ARM64)
 * Windows via WSL2 (AMD64)
 
-## Installation
+## Pre-requirements
 ### Docker
 **MacOs**  
 Install Docker for Mac: https://docs.docker.com/desktop/mac/install/  
@@ -16,19 +17,11 @@ Install Docker Compose https://docs.docker.com/compose/install/
 **Windows**  
 Follow this guide: https://docs.docker.com/desktop/windows/wsl/  
 
-
 ### Homebrew (MacOs/Linux/Windows)
 Install Homebrew by following guide https://docs.brew.sh/Installation
 
-### Formula
-Install the formula via homebrew
-```bash
-brew install digitalspacestdio/docker-compose-magento/docker-compose-magento
-```
-
-## Usage
-Export your composer auth tokens
-If you use github only
+### Composer Credentials
+You need to export following variable or add it to the `.bashrc` or `.zshrc` file
 ```bash
 export COMPOSE_PROJECT_COMPOSER_AUTH='{
     "http-basic": {
@@ -43,11 +36,18 @@ export COMPOSE_PROJECT_COMPOSER_AUTH='{
 }'
 ````
 
-To use specific php version just export environment variable:
+## Installation
+Install the formula via homebrew
 ```bash
-export COMPOSE_PROJECT_PHP_VERSION=7.4
+brew install digitalspacestdio/docker-compose-magento/docker-compose-magento
 ```
-> following versions are supported: 7.1, 7.2, 7.3, 7.4, 8.0, 8.1
+
+If you want to use specific php version just export an environment variable:
+```bash
+export COMPOSE_PROJECT_PHP_VERSION=8.1
+```
+> Following versions are supported: 7.2, 7.3, 7.4, 8.0, 8.1.   
+> By default the 7.4 will be used.   
 
 ## Use Case 1: New project from scratch with sample data
 
@@ -172,6 +172,11 @@ docker-compose-magento down
 Destroy the whole data
 ```bash
 docker-compose-magento down -v
+```
+
+Connect to the mysql
+```bash
+docker-compose-magento mysql
 ```
 
 ## Supported Environment Variables
