@@ -44,7 +44,6 @@ if [[ -f .env ]]; then
   set +o allexport
 fi
 
-export COMPOSE_PROJECT_MODE=${COMPOSE_PROJECT_MODE-default}
 export COMPOSE_PROJECT_PHP_VERSION=${COMPOSE_PROJECT_PHP_VERSION-7.4}
 export COMPOSE_PROJECT_ELASTICSEARCH_VERSION=${COMPOSE_PROJECT_PHP_VERSION-7.10.2}
 export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME-$(basename "$COMPOSE_PROJECT_APPDIR")}
@@ -70,7 +69,14 @@ if [[ -f "${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose.yml" ]]; then
 fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  export COMPOSE_PROJECT_MODE="mutagen"
+  MACOS_VERSION=$(which sw_vers > /dev/null && sw_vers | grep ProductVersion | grep -o '[0-9]\+\.[0-9]\+' || true)
+  if [[ $(echo $MACOS_VERSION | awk -F. '{print $1}') -gt 12 ]] || [[ $(echo $MACOS_VERSION | awk -F. '{print $1}') -gt 11 ]] && [[ $(echo $MACOS_VERSION | awk -F. '{print $2}') -gt 2 ]]; then
+    export COMPOSE_PROJECT_MODE=${COMPOSE_PROJECT_MODE:-default}
+  else
+    export COMPOSE_PROJECT_MODE=${COMPOSE_PROJECT_MODE:-mutagen}
+  fi
+else
+  export COMPOSE_PROJECT_MODE=${COMPOSE_PROJECT_MODE:-default}
 fi
 
 if [[ $COMPOSE_PROJECT_MODE == "mutagen" ]] && [[ -f "${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose-mutagen.yml" ]]; then
