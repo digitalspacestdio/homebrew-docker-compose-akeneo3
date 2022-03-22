@@ -122,7 +122,7 @@ fi
 if [[ $DOCKER_COMPOSE_VERSION -gt 1 ]]; then
   DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_BIN} run -i -T --rm"
 else
-  DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_RUN_CMD}"
+  DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_BIN} run --rm"
 fi
 
 if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql' > /dev/null; then
