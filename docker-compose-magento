@@ -70,11 +70,11 @@ fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   MACOS_VERSION=$(which sw_vers > /dev/null && sw_vers | grep ProductVersion | grep -o '[0-9]\+\.[0-9]\+' || true)
-  if [[ $(echo $MACOS_VERSION | awk -F. '{print $1}') -gt 12 ]] || [[ $(echo $MACOS_VERSION | awk -F. '{print $1}') -gt 11 ]] && [[ $(echo $MACOS_VERSION | awk -F. '{print $2}') -gt 2 ]]; then
-    export COMPOSE_PROJECT_MODE=${COMPOSE_PROJECT_MODE:-default}
-  else
+  #if [[ $(echo $MACOS_VERSION | awk -F. '{print $1}') -gt 12 ]] || [[ $(echo $MACOS_VERSION | awk -F. '{print $1}') -gt 11 ]] && [[ $(echo $MACOS_VERSION | awk -F. '{print $2}') -gt 2 ]]; then
+  #  export COMPOSE_PROJECT_MODE=${COMPOSE_PROJECT_MODE:-default}
+  #else
     export COMPOSE_PROJECT_MODE=${COMPOSE_PROJECT_MODE:-mutagen}
-  fi
+  #fi
 else
   export COMPOSE_PROJECT_MODE=${COMPOSE_PROJECT_MODE:-default}
 fi
