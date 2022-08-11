@@ -2,30 +2,33 @@ version: '3.4'
 
 services:
   fpm:
-    image: "digitalspacestudio/php:${COMPOSE_PROJECT_PHP_VERSION-7.4}"
-    container_name: ${COMPOSE_PROJECT_NAME}_fpm
+    container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_fpm_${COMPOSE_PROJECT_PHP_VERSION:-8.1}_${COMPOSE_PROJECT_NODE_VERSION:-16.16.0}
+    build:
+      context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento"
+      args:
+        PHP_VERSION: ${COMPOSE_PROJECT_PHP_VERSION:-8.1}
+        NODE_VERSION: ${COMPOSE_PROJECT_NODE_VERSION:-16.16.0}
+        PHP_USER_NAME: ${COMPOSE_PROJECT_USER_NAME:-developer}
+        PHP_USER_GROUP: ${COMPOSE_PROJECT_USER_GROUP:-developer}
+    command: php-fpm -R
+    user: "${COMPOSE_PROJECT_USER_NAME:-developer}"
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
-    user: root
     volumes:
-      - 'appcode:/var/www'
-      - 'session:/var/www/var/session'
-      - 'npm:/home/linuxbrew/.npm'
-      - 'composer:/home/linuxbrew/.composer'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/fpm/php-fpm.conf:/home/linuxbrew/.linuxbrew/etc/php/${COMPOSE_PROJECT_PHP_VERSION-7.4}/php-fpm.conf:ro'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/fpm/php.ini:/home/linuxbrew/.linuxbrew/etc/php/${COMPOSE_PROJECT_PHP_VERSION-7.4}/php.ini.dist:ro'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/fpm/msmtprc:/home/linuxbrew/.msmtprc:ro'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/fpm/entrypoint.sh:/entrypoint.sh:ro'
-    entrypoint: '/entrypoint.sh'
+      - 'appcode:/var/www:consistent'
+      - 'home-php:/home/php'
+      - 'home-root:/root'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento/msmtprc:/home/php/.msmtprc:ro'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint:ro'
     working_dir: '/var/www'
     networks:
       - 'appnet'
     environment:
       - 'XHGUI_MONGO_HOSTNAME=mongodb'
       - 'XHGUI_MONGO_DATABASE=xhprof'
-      - 'COMPOSER_AUTH=$COMPOSE_PROJECT_COMPOSER_AUTH'
-    networks:
-      - 'appnet'
+      - 'COMPOSER_AUTH=${COMPOSE_PROJECT_COMPOSER_AUTH:-null}'
+      - 'NODE_OPTIONS="--max-old-space-size=1024"'
+      - 'MAGE_MODE=${MAGE_MODE:-default}'
     depends_on:
       database:
         condition: service_healthy
@@ -38,35 +41,46 @@ services:
       mail:
         condition: service_healthy
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
     healthcheck:
       test: /bin/bash -c "</dev/tcp/localhost/9000"
       start_period: 60s
-      interval: 5s
+      interval: 2s
 
   cli:
-    image: "digitalspacestudio/php:${COMPOSE_PROJECT_PHP_VERSION-7.4}"
-    user: root
+    container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_cli_${COMPOSE_PROJECT_PHP_VERSION:-8.1}_${COMPOSE_PROJECT_NODE_VERSION:-16.16.0}
+    build:
+      context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento"
+      args:
+        PHP_VERSION: ${COMPOSE_PROJECT_PHP_VERSION:-8.1}
+        NODE_VERSION: ${COMPOSE_PROJECT_NODE_VERSION:-16.16.0}
+        PHP_USER_NAME: ${COMPOSE_PROJECT_USER_NAME:-developer}
+        PHP_USER_GROUP: ${COMPOSE_PROJECT_USER_GROUP:-developer}
     command: /bin/true
+    user: "${COMPOSE_PROJECT_USER_NAME:-developer}"
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
     volumes:
-      - 'appcode:/var/www'
-      - 'npm:/home/linuxbrew/.npm'
-      - 'composer:/home/linuxbrew/.composer'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/cli/php.ini:/home/linuxbrew/.linuxbrew/etc/php/${COMPOSE_PROJECT_PHP_VERSION-7.4}/php.ini.dist:ro'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/fpm/msmtprc:/home/linuxbrew/.msmtprc:ro'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/cli/entrypoint.sh:/entrypoint.sh:ro'
-    entrypoint: '/entrypoint.sh'
+      - 'appcode:/var/www:consistent'
+      - 'home-php:/home/php'
+      - 'home-root:/root'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento/msmtprc:/home/php/.msmtprc:ro'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint:ro'
     working_dir: '/var/www'
     environment:
       - 'XHGUI_MONGO_HOSTNAME=mongodb'
       - 'XHGUI_MONGO_DATABASE=xhprof'
-      - 'COMPOSER_AUTH=$COMPOSE_PROJECT_COMPOSER_AUTH'
-      - 'DATABASE_HOST=database'
-      - 'DATABASE_PORT=3306'
-      - 'DATABASE_USER=magento2'
-      - 'DATABASE_PASSWORD=magento2'
-      - 'DATABASE_NAME=magento2'
+      - 'COMPOSER_AUTH=${COMPOSE_PROJECT_COMPOSER_AUTH:-null}'
+      - 'NODE_OPTIONS="--max-old-space-size=1024"'
+      - 'MAGE_MODE=${MAGE_MODE:-default}'
+      - 'DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
+      - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
+      - 'DATABASE_USER=${COMPOSE_PROJECT_ORO_DB_USER:-magento2}'
+      - 'DATABASE_PASSWORD=${COMPOSE_PROJECT_DATABASE_PASSWORD:-magento2}'
+      - 'DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-magento2}'
     networks:
       - 'appnet'
     depends_on:
@@ -80,6 +94,60 @@ services:
         condition: service_healthy
       mail:
         condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+
+  cron:
+    container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_cron_${COMPOSE_PROJECT_PHP_VERSION:-8.1}_${COMPOSE_PROJECT_NODE_VERSION:-16.16.0}
+    build:
+      context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento"
+      args:
+        PHP_VERSION: ${COMPOSE_PROJECT_PHP_VERSION:-8.1}
+        NODE_VERSION: ${COMPOSE_PROJECT_NODE_VERSION:-16.16.0}
+        PHP_USER_NAME: ${COMPOSE_PROJECT_USER_NAME:-developer}
+        PHP_USER_GROUP: ${COMPOSE_PROJECT_USER_GROUP:-developer}
+    command: ofelia daemon --config=/ofelia.ini
+    user: "${COMPOSE_PROJECT_USER_NAME:-developer}"
+    working_dir: '/var/www'
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
+    volumes:
+      - 'appcode:/var/www:consistent'
+      - 'home-php:/home/php'
+      - 'home-root:/root'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento/msmtprc:/home/php/.msmtprc:ro'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint:ro'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento/ofelia.ini:/ofelia.ini:ro'
+    environment:
+      - 'XHGUI_MONGO_HOSTNAME=mongodb'
+      - 'XHGUI_MONGO_DATABASE=xhprof'
+      - 'COMPOSER_AUTH=${COMPOSE_PROJECT_COMPOSER_AUTH:-null}'
+      - 'NODE_OPTIONS="--max-old-space-size=1024"'
+      - 'MAGE_MODE=${MAGE_MODE:-default}'
+      - 'DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
+      - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
+      - 'DATABASE_USER=${COMPOSE_PROJECT_ORO_DB_USER:-magento2}'
+      - 'DATABASE_PASSWORD=${COMPOSE_PROJECT_DATABASE_PASSWORD:-magento2}'
+      - 'DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-magento2}'
+    networks:
+      - 'appnet'
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      redissession:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      mail:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   xhgui:
     image: "xhgui/xhgui:0.20"
@@ -93,7 +161,7 @@ services:
       - XHGUI_MONGO_HOSTNAME=mongodb
       - XHGUI_MONGO_DATABASE=xhprof
     ports:
-      - "${COMPOSE_PROJECT_PORT_XHGUI:-81}:80"
+      - "${COMPOSE_PROJECT_XHGUI_BIND_HOST:-127.0.0.1}:${COMPOSE_PROJECT_PORT_PREFIX}81:80"
     depends_on:
       mongodb:
         condition: service_healthy
@@ -103,7 +171,11 @@ services:
     healthcheck:
       test: nc -vz -w 1 localhost 80
       start_period: 30s
-      interval: 5s
+      interval: 2s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   mail:
     image: "cd2team/mailhog"
@@ -111,14 +183,18 @@ services:
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
     ports:
-      - "${COMPOSE_PROJECT_PORT_MAIL_WEBGUI:-8025}:8025"
+      - "${COMPOSE_PROJECT_MAIL_BIND_HOST:-127.0.0.1}:${COMPOSE_PROJECT_PORT_PREFIX:-80}25:8025"
     networks:
       - 'appnet'
     restart: always
     healthcheck:
       test: "nc -vz -w 1 localhost 8025"
       start_period: 5s
-      interval: 5s
+      interval: 2s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   mongodb:
     image: mongo:4.4
@@ -139,14 +215,17 @@ services:
     healthcheck:
       test: mongo --quiet --eval 'db.runCommand("ping").ok' xhgui
       start_period: 30s
-      interval: 10s
+      interval: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   elasticsearch:
     build:
       context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/elasticsearch"
       args:
-        COMPOSE_PROJECT_ELASTICSEARCH_VERSION: ${COMPOSE_PROJECT_ELASTICSEARCH_VERSION:-7.10.2}
-    build: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/elasticsearch"
+        COMPOSE_PROJECT_ELASTICSEARCH_VERSION: ${COMPOSE_PROJECT_ELASTICSEARCH_VERSION:-7.17.5}
     container_name: ${COMPOSE_PROJECT_NAME}_elasticsearch
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
@@ -156,7 +235,7 @@ services:
       ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms256m -Xmx2048m}'
       discovery.type: 'single-node'
     ports:
-      - "${COMPOSE_PROJECT_PORT_ELASTICSEARCH:-9200}:9200"
+      - "${COMPOSE_PROJECT_ES_BIND_HOST:-127.0.0.1}:${COMPOSE_PROJECT_PORT_PREFIX:-92}92:9200"
     networks:
       - 'appnet'
     restart: always
@@ -165,6 +244,10 @@ services:
       start_period: 15s
       interval: 5s
       retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   redissession:
     image: 'redis:6.0-bullseye'
@@ -178,7 +261,7 @@ services:
     healthcheck:
       test: /bin/bash -c "</dev/tcp/localhost/6379"
       start_period: 30s
-      interval: 5s
+      interval: 2s
 
   redis:
     image: 'redis:6.0-bullseye'
@@ -192,28 +275,32 @@ services:
     healthcheck:
       test: /bin/bash -c "</dev/tcp/localhost/6379"
       start_period: 30s
-      interval: 5s
+      interval: 2s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   database:
-    image: 'mariadb:10.4'
-    command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
+    image: '${COMPOSE_PROJECT_MYSQL_IMAGE:-mysql:8.0-oracle}'
+    command: '--federated --default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
     container_name: ${COMPOSE_PROJECT_NAME}_database
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
     cap_add:
       - SYS_NICE # CAP_SYS_NICE
     environment:
-      LANG: 'C.UTF-8'
-      MYSQL_ROOT_PASSWORD: 'root'
-      MYSQL_USER: 'magento2'
-      MYSQL_PASSWORD: 'magento2'
-      MYSQL_DATABASE: 'magento2'
+      - 'LANG=C.UTF-8'
+      - 'MYSQL_ROOT_PASSWORD=root'
+      - 'MYSQL_USER=${COMPOSE_PROJECT_DATABASE_USER:-magento2}'
+      - 'MYSQL_PASSWORD=${COMPOSE_PROJECT_DATABASE_PASSWORD:-magento2}'
+      - 'MYSQL_DATABASE=${COMPOSE_PROJECT_DATABASE_NAME:-magento2}'
     volumes:
 #      - '${COMPOSE_PROJECT_APPDIR:-$PWD}/.mysql.initdb.d:/docker-entrypoint-initdb.d:ro'
       - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/mysql/my.cnf:/etc/mysql/conf.d/magento2.cnf:ro'
       - 'mysql-data:/var/lib/mysql:delegated'
     ports:
-      - '${COMPOSE_PROJECT_PORT_MYSQL:-3306}:3306'
+      - '${COMPOSE_PROJECT_MYSQL_BIND_HOST:-127.0.0.1}:${COMPOSE_PROJECT_PORT_PREFIX:-33}06:3306'
     networks:
       - 'appnet'
     restart: always
@@ -222,24 +309,32 @@ services:
       start_period: 60s
       interval: 5s
       retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   database-cli:
-    image: 'mariadb:10.4'
+    image: '${COMPOSE_PROJECT_MYSQL_IMAGE:-mysql:8.0-oracle}'
     command: /bin/true
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
     environment:
       - 'LANG=C.UTF-8'
-      - 'DATABASE_HOST=database'
-      - 'DATABASE_PORT=3306'
-      - 'DATABASE_USER=magento2'
-      - 'DATABASE_PASSWORD=magento2'
-      - 'DATABASE_NAME=magento2'
+      - 'DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
+      - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
+      - 'DATABASE_USER=${COMPOSE_PROJECT_DATABASE_USER:-magento2}'
+      - 'DATABASE_PASSWORD=${COMPOSE_PROJECT_DATABASE_PASSWORD:-magento2}'
+      - 'DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-magento2}'
     networks:
       - 'appnet'
     depends_on:
       database:
         condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   nginx:
     build: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/nginx"
@@ -250,7 +345,7 @@ services:
       fpm:
         condition: service_healthy
     ports:
-      - '${COMPOSE_PROJECT_PORT_HTTP:-80}:80'
+      - '${COMPOSE_PROJECT_NGINX_BIND_HOST:-127.0.0.1}:${COMPOSE_PROJECT_PORT_PREFIX}80:80'
     volumes:
       - 'appcode:/var/www:ro'
       - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro'
@@ -260,7 +355,7 @@ services:
     healthcheck:
       test: /bin/bash -c "</dev/tcp/localhost/80"
       start_period: 30s
-      interval: 5s
+      interval: 2s
 
 networks:
   appnet:
@@ -272,11 +367,9 @@ volumes:
       type: none
       o: bind
       device: "${COMPOSE_PROJECT_APPDIR:-$PWD}"
-  npm:
+  home-php:
     driver: local
-  composer:
-    driver: local
-  session:
+  home-root:
     driver: local
   elasticsearch-data:
     driver: local

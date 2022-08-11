@@ -18,7 +18,7 @@ if [[ -z $COMPOSE_PROJECT_APPDIR ]]; then
 fi
 
 if [[ -z $COMPOSE_PROJECT_APPDIR ]]; then
-  if [ -z "$(ls -A $PWD)" ]; then
+  if [ -z "$(ls $PWD)" ]; then
     export COMPOSE_PROJECT_APPDIR="$PWD"
   else
     echo "Application root folder not found, and current directory is not empty, terminating..."
@@ -44,16 +44,14 @@ if [[ -f .env ]]; then
   set +o allexport
 fi
 
-export COMPOSE_PROJECT_PHP_VERSION=${COMPOSE_PROJECT_PHP_VERSION-7.4}
-export COMPOSE_PROJECT_ELASTICSEARCH_VERSION=${COMPOSE_PROJECT_PHP_VERSION-7.10.2}
-export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME-$(basename "$COMPOSE_PROJECT_APPDIR")}
-export COMPOSE_PROJECT_PORT_PREFIX=${COMPOSE_PROJECT_PORT_PREFIX-"302"}
-export COMPOSE_PROJECT_PORT_HTTP=${COMPOSE_PROJECT_PORT_HTTP-"${COMPOSE_PROJECT_PORT_PREFIX}80"}
-export COMPOSE_PROJECT_PORT_XHGUI=${COMPOSE_PROJECT_PORT_XHGUI-"${COMPOSE_PROJECT_PORT_PREFIX}81"}
-export COMPOSE_PROJECT_PORT_MYSQL=${COMPOSE_PROJECT_PORT_MYSQL-"${COMPOSE_PROJECT_PORT_PREFIX}06"}
-export COMPOSE_PROJECT_PORT_ELASTICSEARCH=${COMPOSE_PROJECT_PORT_ELASTICSEARCH-"${COMPOSE_PROJECT_PORT_PREFIX}92"}
-export COMPOSE_PROJECT_PORT_MAIL_WEBGUI=${COMPOSE_PROJECT_PORT_MAIL_WEBGUI-"${COMPOSE_PROJECT_PORT_PREFIX}25"}
-export COMPOSE_PROJECT_COMPOSER_AUTH=${COMPOSE_PROJECT_COMPOSER_AUTH-${COMPOSER_AUTH-""}}
+export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-$(basename "$COMPOSE_PROJECT_APPDIR")}
+export COMPOSE_PROJECT_PORT_PREFIX=${COMPOSE_PROJECT_PORT_PREFIX:-"302"}
+export COMPOSE_PROJECT_PORT_HTTP=${COMPOSE_PROJECT_PORT_HTTP:-"${COMPOSE_PROJECT_PORT_PREFIX}80"}
+export COMPOSE_PROJECT_PORT_XHGUI=${COMPOSE_PROJECT_PORT_XHGUI:-"${COMPOSE_PROJECT_PORT_PREFIX}81"}
+export COMPOSE_PROJECT_PORT_MYSQL=${COMPOSE_PROJECT_PORT_MYSQL:-"${COMPOSE_PROJECT_PORT_PREFIX}06"}
+export COMPOSE_PROJECT_PORT_ELASTICSEARCH=${COMPOSE_PROJECT_PORT_ELASTICSEARCH:-"${COMPOSE_PROJECT_PORT_PREFIX}92"}
+export COMPOSE_PROJECT_PORT_MAIL_WEBGUI=${COMPOSE_PROJECT_PORT_MAIL_WEBGUI:-"${COMPOSE_PROJECT_PORT_PREFIX}25"}
+export COMPOSE_PROJECT_COMPOSER_AUTH=${COMPOSE_PROJECT_COMPOSER_AUTH:-${COMPOSER_AUTH:-""}}
 export COMPOSE_PROJECT_CONFIG_DIR="$HOME/.$(basename $0)/${COMPOSE_PROJECT_NAME}"
 
 if [[ ! -d "${COMPOSE_PROJECT_CONFIG_DIR}" ]];then
@@ -67,6 +65,17 @@ DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN-$(which docker) compose}"
 DOCKER_COMPOSE_VERSION=$($DOCKER_COMPOSE_BIN version | grep '[0-9]\+\.[0-9]\+\.[0-9]\+' -o | awk -F. '{ print $1 }')
 if [[ -f "${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose.yml" ]]; then
   DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN} -f ${COMPOSE_PROJECT_CONFIG_DIR}/docker-compose.yml"
+fi
+
+if docker system info --format '{{.SecurityOptions}}' | grep "name=rootless" > /dev/null 2>&1; then
+  # Use root user in the rootless mode
+  export COMPOSE_PROJECT_USER_NAME="root"
+else
+  export COMPOSE_PROJECT_USER_NAME="developer"
+fi
+
+if [[ -f ${COMPOSE_PROJECT_APPDIR}/docker-compose-magento.local.yml ]]; then
+  DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN} -f ${COMPOSE_PROJECT_APPDIR}/docker-compose-magento.local.yml"
 fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -101,7 +110,25 @@ if [[ $COMPOSE_PROJECT_MODE == "mutagen" ]] && [[ -f "${COMPOSE_PROJECT_CONFIG_D
     fi
     DOCKER_CONTAINER_NAME_MUTAGEN=$(docker inspect -f '{{.Name}}' $(${DOCKER_COMPOSE_BIN} ps -q mutagen) | cut -c2-)
     if ! mutagen sync list | grep -i "Name: ${MUTAGEN_SESSION_NAME}" > /dev/null 2>&1; then
-      mutagen sync create --sync-mode=two-way-resolved --ignore=".idea" --ignore=".mysql.initdb.d" --ignore-vcs --symlink-mode=ignore --name=${MUTAGEN_SESSION_NAME} "$COMPOSE_PROJECT_APPDIR" docker://linuxbrew@${DOCKER_CONTAINER_NAME_MUTAGEN}/var/www
+      if docker system info --format '{{.SecurityOptions}}' | grep "name=rootless" > /dev/null; then
+        MUTAGEN_USER="root"
+      else
+        MUTAGEN_USER="php"
+      fi
+      mutagen sync create --sync-mode=two-way-resolved \
+      --scan-mode=accelerated \
+      --watch-mode-alpha=portable \
+      --watch-mode-beta=force-poll \
+      --watch-polling-interval-beta=3 \
+      --ignore=".idea" \
+      --ignore=".history" \
+      --ignore=".mysql.initdb.d" \
+      --ignore=".psql.initdb.d" \
+      --ignore=".git" \
+      --ignore-vcs \
+      --symlink-mode=ignore \
+      --name=${MUTAGEN_SESSION_NAME} \
+      "$COMPOSE_PROJECT_APPDIR" docker://${MUTAGEN_USER}@${DOCKER_CONTAINER_NAME_MUTAGEN}/var/www
     else
       WAIT_SYNC=""
     fi
@@ -127,9 +154,13 @@ if [[ $1 == "up" ]]; then
 fi
 
 if [[ $DOCKER_COMPOSE_VERSION -gt 1 ]]; then
-  DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_BIN} run -i -T --rm"
+  DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_BIN} run -i"
 else
   DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_BIN} run --rm"
+fi
+
+if docker system info --format '{{.SecurityOptions}}' | grep "name=rootless" > /dev/null; then
+  DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_RUN_CMD} --user root"
 fi
 
 if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql' > /dev/null; then

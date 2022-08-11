@@ -21,7 +21,7 @@ Follow this guide: https://docs.docker.com/desktop/windows/wsl/
 Install Homebrew by following guide https://docs.brew.sh/Installation
 
 ### Composer Credentials
-You need to export following variable or add it to the `.bashrc` or `.zshrc` file
+You need to export `COMPOSE_PROJECT_COMPOSER_AUTH` variable s othat Composer can use credentials inside containers
 ```bash
 export COMPOSE_PROJECT_COMPOSER_AUTH='{
     "http-basic": {
@@ -34,7 +34,9 @@ export COMPOSE_PROJECT_COMPOSER_AUTH='{
         "github.com": "xxxxxxxxxxxx"
     }
 }'
-````
+```
+> Optionally you can add this row to your `~/.bashrc` or `~/.zshrc`
+
 
 ## Installation
 Install the formula via homebrew
@@ -42,148 +44,156 @@ Install the formula via homebrew
 brew install digitalspacestdio/docker-compose-magento/docker-compose-magento
 ```
 
-If you want to use specific php version just export an environment variable:
-```bash
-export COMPOSE_PROJECT_PHP_VERSION=8.1
-```
-> Following versions are supported: 7.2, 7.3, 7.4, 8.0, 8.1.   
-> By default the 7.4 will be used.   
+## Option.1 Starting new magento project with sample data from scratch
 
-## Use Case 1: New project from scratch with sample data
-
-Create the projet directory
+1. Create the new projet directory
 ```bash
 mkdir ~/magento2
 ```
 
-Navigate to the directory
+2. Navigate to the projet directory
 ```bash
 cd ~/magento2
 ```
 
-Create the project
+3. Create the new magento project
 ```bash
 docker-compose-magento composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=^2 /var/www
 ```
 
-Install dependencies
-```bash
-docker-compose-magento composer install -o --no-interaction
-```
-
-Deploy sample data
+4. Deploy sample data
 ```bash
 docker-compose-magento bin/magento sampledata:deploy
 ```
 
-Install the application
+5. Install the application
 ```bash
 docker-compose-magento bin/magento setup:install --backend-frontname="admin" --key="admin" --session-save="files" --db-host="database:3306" --db-name="magento2" --db-user="magento2" --db-password="magento2" --base-url="http://localhost:30280/" --base-url-secure="https://localhost:30280/" --admin-user="admin" --admin-password='$ecretPassw0rd' --admin-email="johndoe@example.com" --admin-firstname="John" --admin-lastname="Doe" --key="26765209cb05b93729898c892d18a8dd" --search-engine=elasticsearch7  --elasticsearch-host=elasticsearch --elasticsearch-port=9200
 ```
 
-Disable 2FA module (if needed)
+6. Optionally: Disable 2FA module (if needed)
 ```bash
 docker-compose-magento bin/magento module:disable Magento_TwoFactorAuth
 ```
 
-Disable FPC
+7. Optionally: Disable FPC
 ```bash
 docker-compose-magento bin/magento cache:disable full_page
 ```
 
-Start the stack in the background mode
+8. Optionally: Disable Secure URLs
+```bash
+docker-compose-magento bin/magento config:set web/secure/use_in_adminhtml 0
+docker-compose-magento bin/magento config:set web/secure/use_in_frontend 1
+```
+
+9. Start the stack in the background mode
 ```bash
 docker-compose-magento up -d
 ```
 
-Start the stack in the foreground mode
-```bash
-docker-compose-magento up
-```
-> Application will be available by following link: http://localhost:30280/
+## Option.2 Starting already exists project from git and local sql dump
 
-Stop the stack
+1. Clone the project source code
+
 ```bash
-docker-compose-magento down
+git clone https://github.com/magento/magento2.git ~/magento2
 ```
 
-Destroy the whole data
+2. navigate to the project dir
 ```bash
-docker-compose-magento down -v
+cd  ~/magento2
 ```
 
-## Use Case 2: Already exists project with sql dump
-Navigate to the project directory
-```bash
-cd ~/my-awesome-magento-project
-```
-
-Install dependencies
+3. Install dependencies
 ```bash
 docker-compose-magento composer install -o --no-interaction
 ```
 
-Import database dump (supports `*.sql` and `*.sql.gz` files)
-```bash
-docker-compose-magento database-import /path/to/dump.sql.gz
-```
-
-Configure the application database credentials
+4. Configure the application database credentials
 ```bash
 docker-compose-magento database-config
 ```
 
-Configure the application redis settings
+5. Configure the application redis settings
 ```bash
 docker-compose-magento redis-config
 ```
 
-Configure the application elasticsearch settings
+6. Configure the application elasticsearch settings
 ```bash
 docker-compose-magento elasticsearch-config
 ```
 
-Disable 2FA module (if needed)
+7. Import database dump (supports `*.sql` and `*.sql.gz` files)
+```bash
+docker-compose-magento database-import /path/to/dump.sql.gz
+```
+
+8. Optionally: Disable 2FA module (if needed)
 ```bash
 docker-compose-magento bin/magento module:disable Magento_TwoFactorAuth
 ```
 
-Disable FPC
+9. Optionally: Disable FPC
 ```bash
 docker-compose-magento bin/magento cache:disable full_page
 ```
 
-Start the stack in the background mode
+10. Optionally: Disable Secure URLs
+```bash
+docker-compose-magento bin/magento config:set  web/secure/use_in_adminhtml 0
+docker-compose-magento bin/magento config:set  web/secure/use_in_frontend 1
+```
+
+11. Start the stack in the background mode
 ```bash
 docker-compose-magento up -d
 ```
 
-Start the stack in the foreground mode
-```bash
-docker-compose-magento up
-```
-> Application will be available by following link: http://localhost:30280/admin
+> Application will be available by following link: http://localhost:30280/
 
-Stop the stack
+## Shutdown the project stack
+
+Stop containers
 ```bash
 docker-compose-magento down
 ```
 
-Destroy the whole data
+Destroy containers and persistent data
 ```bash
 docker-compose-magento down -v
 ```
 
-Connect to the mysql
+## Extra tools
+
+Connecting to the mysql container
 ```bash
 docker-compose-magento mysql
 ```
 
-## Supported Environment Variables
+Connecting to the cli container
+```bash
+docker-compose-magento bash
+```
+
+Generate compose config and run directly without this tool
+```bash
+docker-compose-magento config > docker-compose.yml
+```
+```bash
+docker compose up
+```
+
+
+## Environment Variables
+> Can be stored in the `.dockenv` or `.env` file in the project root
 * `COMPOSE_PROJECT_MODE` - (`mutagen`|`default`)
-* `COMPOSE_PROJECT_PHP_VERSION` - (`7.1`|`7.2`|`7.3`|`7.4`|`8.0`|`8.1`)
-* `COMPOSE_PROJECT_ELASTICSEARCH_VERSION` - `7.10.2` by default
-* `COMPOSE_PROJECT_NAME` - by default the project directory will be used
+* `COMPOSE_PROJECT_PHP_VERSION` - (`7.1`|`7.2`|`7.3`|`7.4`|`8.0`|`8.1`|`8.2`), the image will be built from a corresponding `fpm-alpine` image, see https://hub.docker.com/_/php/?tab=tags&page=1&name=fpm-alpine&ordering=name for more versions
+* `COMPOSE_PROJECT_NODE_VERSION` - (`12.22.12`|`14.19.3`|`16.16.0`) see https://nodejs.org/dist/ for more versions
+* `COMPOSE_PROJECT_MYSQL_IMAGE` - `mysql:8.0-oracle` see https://hub.docker.com/_/mysql/?tab=tags for more versions
+* `COMPOSE_PROJECT_ELASTICSEARCH_VERSION` - `7.17.5` see https://www.docker.elastic.co/r/elasticsearch/elasticsearch-oss for more versions
+* `COMPOSE_PROJECT_NAME` - by default the working directory name will be used
 * `COMPOSE_PROJECT_PORT_PREFIX` - `302` by default
 * `COMPOSE_PROJECT_PORT_HTTP` - `$COMPOSE_PROJECT_PORT_PREFIX` + `80` by default
 * `COMPOSE_PROJECT_PORT_XHGUI` - `$COMPOSE_PROJECT_PORT_PREFIX` + `81` by default

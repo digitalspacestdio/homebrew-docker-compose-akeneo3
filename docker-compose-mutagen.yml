@@ -2,15 +2,26 @@ version: '3.4'
 
 services:
   mutagen:
-    image: "digitalspacestudio/php:${COMPOSE_PROJECT_PHP_VERSION-7.4}"
-    user: root
+    container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_mutagen_${COMPOSE_PROJECT_PHP_VERSION:-8.1}_${COMPOSE_PROJECT_NODE_VERSION:-16.16.0}
+    build:
+      context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-magento"
+      args:
+        PHP_VERSION: ${COMPOSE_PROJECT_PHP_VERSION:-8.1}
+        NODE_VERSION: ${COMPOSE_PROJECT_NODE_VERSION:-16.16.0}
+        PHP_USER_NAME: ${COMPOSE_PROJECT_USER_NAME:-developer}
+        PHP_USER_GROUP: ${COMPOSE_PROJECT_USER_GROUP:-developer}
+    user: "${COMPOSE_PROJECT_USER_NAME:-developer}"
     volumes:
       - 'appcode:/var/www'
-    command: "bash -c 'chown linuxbrew:linuxbrew /var/www; sleep infinity'"
+    command: "bash -c 'chmod 0777 /var/www; sleep infinity'"
     working_dir: '/var/www'
     networks:
       - 'appnet'
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
   cli:
     depends_on:
       mutagen:
