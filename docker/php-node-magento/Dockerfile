@@ -69,7 +69,6 @@ RUN set -eux; \
     imap \
     sockets \
     bcmath \
-    mbstring \
 	; \
 	pecl install \
 		apcu \
