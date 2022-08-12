@@ -27,6 +27,7 @@ RUN apk add --no-cache \
     bash \
     curl \
     msmtp-openrc \
+    msmtp \
     jpegoptim \
     pngquant \
     optipng \
@@ -246,6 +247,8 @@ RUN curl -1sLf 'https://files.magerun.net/n98-magerun2.phar' > /usr/local/bin/n9
 
 # Dev image
 FROM app_php AS app_php_dev
+
+ADD msmtprc /.msmtprc
 
 RUN rm -f $PHP_INI_DIR/conf.d/app.prod.ini; \
   mv "$PHP_INI_DIR/php.ini" "$PHP_INI_DIR/php.ini-production"; \
