@@ -61,28 +61,28 @@ RUN set -eux; \
   \
   mkdir -p /usr/src/php/ext/apcu; \
   curl -fsSL https://github.com/krakjoe/apcu/archive/v$EXT_APCU_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/apcu --strip 1; \
-  docker-php-ext-install -j$(nproc) apcu; \
+  docker-php-ext-install -j$(printf "2\n$(nproc)" | sort -g | head -n1) apcu; \
   \
   mkdir -p /usr/src/php/ext/igbinary; \
   curl -fsSL curl -fsSL https://github.com/igbinary/igbinary/archive/$EXT_IGBINARY_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/igbinary --strip 1; \
-  docker-php-ext-install -j$(nproc) igbinary; \
+  docker-php-ext-install -j$(printf "2\n$(nproc)" | sort -g | head -n1) igbinary; \
   \
   mkdir -p /usr/src/php/ext/redis; \
   curl -fsSL curl -fsSL https://github.com/phpredis/phpredis/archive/$EXT_REDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1; \
   docker-php-ext-configure redis --enable-redis-igbinary; \
-  docker-php-ext-install -j$(nproc) redis; \
+  docker-php-ext-install -j$(printf "2\n$(nproc)" | sort -g | head -n1) redis; \
   \
   mkdir -p /usr/src/php/ext/mongodb; \
   git clone --recursive --branch $EXT_MONGODB_VERSION --depth 1 https://github.com/mongodb/mongo-php-driver.git /usr/src/php/ext/mongodb; \
   docker-php-ext-configure mongodb; \
-  docker-php-ext-install -j$(nproc) mongodb; \
+  docker-php-ext-install -j$(printf "2\n$(nproc)" | sort -g | head -n1) mongodb; \
   \
   mkdir -p /usr/src/php/ext/xdebug; \
   curl -fsSL curl -fsSL https://github.com/xdebug/xdebug/archive/refs/tags/$EXT_XDEBUG_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/xdebug --strip 1; \
   docker-php-ext-configure xdebug; \
-  docker-php-ext-install -j$(nproc) xdebug; \
+  docker-php-ext-install -j$(printf "2\n$(nproc)" | sort -g | head -n1) xdebug; \
   \
-  docker-php-ext-install -j$(nproc) \
+  docker-php-ext-install -j$(printf "2\n$(nproc)" | sort -g | head -n1) \
     pdo_pgsql \
     pdo_mysql \
     intl \
@@ -171,7 +171,7 @@ RUN addgroup -g $PHP_GID ${PHP_USER_GROUP} \
     && tar -xf "node-v$NODE_VERSION.tar.xz" \
     && cd "node-v$NODE_VERSION" \
     && ./configure \
-    && make -j$(getconf _NPROCESSORS_ONLN) V= \
+    && make -j$(getconf _printf "2\n$(nproc)" | sort -g | head -n1ESSORS_ONLN) V= \
     && make install \
     && apk del .build-deps-full \
     && cd .. \
@@ -205,7 +205,6 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   # smoke test
   && yarn --version
 
-
 WORKDIR /var/www
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
@@ -219,8 +218,6 @@ RUN mkdir -p /var/run/php
 
 COPY docker-healthcheck.sh /usr/local/bin/docker-healthcheck
 RUN chmod +x /usr/local/bin/docker-healthcheck
-
-HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
@@ -238,30 +235,18 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Install ofelia
 COPY --from=mcuadros/ofelia:latest /usr/bin/ofelia /usr/bin/ofelia
 
-
 RUN curl -1sLf 'https://files.magerun.net/n98-magerun2.phar' > /usr/local/bin/n98-magerun2.phar \
   && ln -s /usr/local/bin/n98-magerun2.phar /usr/local/bin/n98-magerun2 \
   && chmod +x /usr/local/bin/n98-magerun2.phar
 
-# RUN set -eux; \
-# 	mkdir -p var/cache var/logs;
-
 # Dev image
 FROM app_php AS app_php_dev
-
-ENV APP_ENV=dev XDEBUG_MODE=off
 
 RUN rm -f $PHP_INI_DIR/conf.d/app.prod.ini; \
   mv "$PHP_INI_DIR/php.ini" "$PHP_INI_DIR/php.ini-production"; \
   mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 COPY app.dev.ini $PHP_INI_DIR/conf.d/
-
-# RUN set -eux; \
-#   apk add --no-cache --virtual .build-deps $PHPIZE_DEPS; \
-#   pecl install xdebug; \
-#   docker-php-ext-enable xdebug; \
-#   apk del .build-deps
 
 USER ${PHP_USER_NAME}
 VOLUME "/home/php" "/root" '/var/www'

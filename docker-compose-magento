@@ -149,7 +149,7 @@ if [[ $1 == "up" ]]; then
 fi
 
 if [[ $DOCKER_COMPOSE_VERSION -gt 1 ]]; then
-  DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_BIN} run -i"
+  DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_BIN} run -i --rm"
 else
   DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_BIN} run --rm"
 fi
