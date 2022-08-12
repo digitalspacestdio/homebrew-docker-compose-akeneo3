@@ -99,6 +99,9 @@ RUN set -eux; \
     bcmath \
     mbstring \
   ; \
+  docker-php-ext-enable \
+		opcache \
+	; \
   docker-php-source delete; \
   \
   runDeps="$( \
