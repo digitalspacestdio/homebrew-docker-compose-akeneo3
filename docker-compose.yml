@@ -11,7 +11,7 @@ services:
         PHP_USER_NAME: ${COMPOSE_PROJECT_PHP_USER_NAME:-developer}
         PHP_USER_GROUP: ${COMPOSE_PROJECT_PHP_USER_GROUP:-developer}
         PHP_UID: ${COMPOSE_PROJECT_PHP_UID:-1000}
-        PHP_GID: ${PHP_GID:-1000}
+        PHP_GID: ${COMPOSE_PROJECT_PHP_GID:-1000}
     command: php-fpm -R
     user: "${COMPOSE_PROJECT_USER_NAME:-developer}"
     labels:
@@ -62,7 +62,7 @@ services:
         PHP_USER_NAME: ${COMPOSE_PROJECT_PHP_USER_NAME:-developer}
         PHP_USER_GROUP: ${COMPOSE_PROJECT_PHP_USER_GROUP:-developer}
         PHP_UID: ${COMPOSE_PROJECT_PHP_UID:-1000}
-        PHP_GID: ${PHP_GID:-1000}
+        PHP_GID: ${COMPOSE_PROJECT_PHP_GID:-1000}
     command: /bin/true
     user: "${COMPOSE_PROJECT_USER_NAME:-developer}"
     labels:
@@ -113,7 +113,7 @@ services:
         PHP_USER_NAME: ${COMPOSE_PROJECT_PHP_USER_NAME:-developer}
         PHP_USER_GROUP: ${COMPOSE_PROJECT_PHP_USER_GROUP:-developer}
         PHP_UID: ${COMPOSE_PROJECT_PHP_UID:-1000}
-        PHP_GID: ${PHP_GID:-1000}
+        PHP_GID: ${COMPOSE_PROJECT_PHP_GID:-1000}
     command: ofelia daemon --config=/ofelia.ini
     user: "${COMPOSE_PROJECT_USER_NAME:-developer}"
     working_dir: '/var/www'
