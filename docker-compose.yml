@@ -31,6 +31,7 @@ services:
       - 'COMPOSER_AUTH=${COMPOSE_PROJECT_COMPOSER_AUTH:-null}'
       - 'NODE_OPTIONS="--max-old-space-size=1024"'
       - 'MAGE_MODE=${MAGE_MODE:-default}'
+      - 'XDEBUG_MODE=${XDEBUG_MODE_FPM:-off}'
     depends_on:
       database:
         condition: service_healthy
@@ -80,6 +81,7 @@ services:
       - 'COMPOSER_AUTH=${COMPOSE_PROJECT_COMPOSER_AUTH:-null}'
       - 'NODE_OPTIONS="--max-old-space-size=1024"'
       - 'MAGE_MODE=${MAGE_MODE:-default}'
+      - 'XDEBUG_MODE=${XDEBUG_MODE_CLI:-off}'
       - 'DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
       - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
       - 'DATABASE_USER=${COMPOSE_PROJECT_ORO_DB_USER:-magento2}'
@@ -132,6 +134,7 @@ services:
       - 'COMPOSER_AUTH=${COMPOSE_PROJECT_COMPOSER_AUTH:-null}'
       - 'NODE_OPTIONS="--max-old-space-size=1024"'
       - 'MAGE_MODE=${MAGE_MODE:-default}'
+      - 'XDEBUG_MODE=${XDEBUG_MODE_CRON:-off}'
       - 'DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
       - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
       - 'DATABASE_USER=${COMPOSE_PROJECT_ORO_DB_USER:-magento2}'
