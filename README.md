@@ -92,6 +92,8 @@ docker-compose-magento bin/magento config:set web/secure/use_in_frontend 1
 docker-compose-magento up -d
 ```
 
+> Application will be available by following link: http://localhost:30280/
+
 ## Option.2 Starting already exists project from git and local sql dump
 
 1. Clone the project source code
