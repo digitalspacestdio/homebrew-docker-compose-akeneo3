@@ -157,9 +157,30 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+  
+  mail:
+    image: "cd2team/mailhog"
+    container_name: ${COMPOSE_PROJECT_NAME}_mail
+    labels:
+      - 'project.name=${COMPOSE_PROJECT_NAME}'
+    ports:
+      - "${COMPOSE_PROJECT_MAIL_BIND_HOST:-127.0.0.1}:${COMPOSE_PROJECT_PORT_PREFIX:-80}25:8025"
+    networks:
+      - 'appnet'
+    restart: always
+    healthcheck:
+      test: "nc -vz -w 1 localhost 8025"
+      start_period: 5s
+      interval: 2s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+
 
   xhgui:
     image: "xhgui/xhgui:0.20"
+    profiles: ["profiler"]
     container_name: ${COMPOSE_PROJECT_NAME}_xhgui
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
@@ -186,27 +207,9 @@ services:
       options:
         max-size: "10m"
 
-  mail:
-    image: "cd2team/mailhog"
-    container_name: ${COMPOSE_PROJECT_NAME}_mail
-    labels:
-      - 'project.name=${COMPOSE_PROJECT_NAME}'
-    ports:
-      - "${COMPOSE_PROJECT_MAIL_BIND_HOST:-127.0.0.1}:${COMPOSE_PROJECT_PORT_PREFIX:-80}25:8025"
-    networks:
-      - 'appnet'
-    restart: always
-    healthcheck:
-      test: "nc -vz -w 1 localhost 8025"
-      start_period: 5s
-      interval: 2s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-
   mongodb:
     image: mongo:4.4
+    profiles: ["profiler"]
     # (case sensitive) engine: mmapv1, rocksdb, wiredTiger, inMemory
     command: --storageEngine=wiredTiger
     container_name: ${COMPOSE_PROJECT_NAME}_mongodb
