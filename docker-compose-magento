@@ -74,8 +74,24 @@ else
   export COMPOSE_PROJECT_USER_NAME="developer"
 fi
 
-if [[ -f ${COMPOSE_PROJECT_APPDIR}/docker-compose-magento.local.yml ]]; then
-  DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN} -f ${COMPOSE_PROJECT_APPDIR}/docker-compose-magento.local.yml"
+if [[ -f "$COMPOSE_PROJECT_APPDIR/.docker-compose.user.yml" ]]; then
+  echo "==> Additional docker compose config will be used: $COMPOSE_PROJECT_APPDIR/.docker-compose.user.yml"
+  DOCKER_COMPOSE_BIN="${DOCKER_COMPOSE_BIN} -f $COMPOSE_PROJECT_APPDIR/.docker-compose.user.yml"
+fi
+
+if [[ -f "$COMPOSE_PROJECT_APPDIR/.php-version" ]] && [[ -z $COMPOSE_PROJECT_PHP_VERSION ]]; then
+  export COMPOSE_PROJECT_PHP_VERSION=$(cat $COMPOSE_PROJECT_APPDIR/.php-version | head -n1)
+  echo "==> Found .php-version with following version: $COMPOSE_PROJECT_PHP_VERSION"
+fi
+
+if [[ -f "$COMPOSE_PROJECT_APPDIR/.phprc" ]] && [[ -z $COMPOSE_PROJECT_PHP_VERSION ]]; then
+  export COMPOSE_PROJECT_PHP_VERSION=$(cat $COMPOSE_PROJECT_APPDIR/.phprc | head -n1)
+  echo "==> Found .phprc with following version: $COMPOSE_PROJECT_PHP_VERSION"
+fi
+
+if [[ -f "$COMPOSE_PROJECT_APPDIR/.nvmrc" ]] && [[ -z $COMPOSE_PROJECT_NODE_VERSION ]]; then
+  export COMPOSE_PROJECT_NODE_VERSION=$(cat $COMPOSE_PROJECT_APPDIR/.nvmrc | head -n1)
+  echo "==> Found .nvmrc with following version: $COMPOSE_PROJECT_NODE_VERSION"
 fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -120,6 +136,8 @@ if [[ $COMPOSE_PROJECT_MODE == "mutagen" ]] && [[ -f "${COMPOSE_PROJECT_CONFIG_D
       --ignore=".mysql.initdb.d" \
       --ignore=".psql.initdb.d" \
       --ignore=".git" \
+      --ignore="var/log" \
+      --ignore="var/logs" \
       --ignore-vcs \
       --symlink-mode=ignore \
       --name=${MUTAGEN_SESSION_NAME} \
