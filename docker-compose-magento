@@ -180,24 +180,43 @@ if docker system info --format '{{.SecurityOptions}}' | grep "name=rootless" > /
   DOCKER_COMPOSE_RUN_CMD="${DOCKER_COMPOSE_RUN_CMD} --user root"
 fi
 
-if echo $1 | grep -i 'import' | grep -i 'db\|database\|mysql' > /dev/null; then
+if echo $1 | grep -i 'import' | grep -i 'db\|database' > /dev/null; then
   if [[ -z $2 ]]; then
     echo "Data file was not provided"
     exit 1
   fi
-  if ! [[ -r $2 ]]; then
+  if [[ -r $2 ]]; then
+    DB_DUMP=$(realpath $2)
+  elif [[ -r "$COMPOSE_PROJECT_APPDIR/$2" ]]; then
+    DB_DUMP=$(realpath "$COMPOSE_PROJECT_APPDIR/$2")
+  fi
+
+  if [[ -z $DB_DUMP ]] || [[ ! -r $DB_DUMP ]]; then
     echo "Data file '$2' does not readable"
     exit 1
   fi
-  DB_DUMP=$(realpath $2)
+
   DB_DUMP_BASENAME=$(echo "${DB_DUMP##*/}")
+  DB_IMPORT_CMD="sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/DEFINER=CURRENT_USER \*/' | MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME"
+
   if echo ${DB_DUMP_BASENAME} | grep -i 'sql\.gz$' > /dev/null; then
-    MYSQL_CMD="\$(which pv > /dev/null && echo 'pv -f' || echo cat) /${DB_DUMP_BASENAME} | gunzip | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/DEFINER=CURRENT_USER \*/' | MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME"
-  else
-    MYSQL_CMD="\$(which pv > /dev/null && echo 'pv -f' || echo cat) /${DB_DUMP_BASENAME} | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/DEFINER=CURRENT_USER \*/' | MYSQL_PWD=\$DATABASE_PASSWORD mysql -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME"
+    DB_IMPORT_CMD="gunzip | ${DB_IMPORT_CMD}"
   fi
+  DB_IMPORT_CMD="cat /${DB_DUMP_BASENAME} | ${DB_IMPORT_CMD}"
+
   echo "Starting import of the database dump..."
-  exec ${DOCKER_COMPOSE_RUN_CMD} -v "${DB_DUMP}:/${DB_DUMP_BASENAME}" database-cli bash -c "$MYSQL_CMD"
+  exec ${DOCKER_COMPOSE_RUN_CMD} -v "${DB_DUMP}:/${DB_DUMP_BASENAME}" database-cli bash -c "$DB_IMPORT_CMD"
+fi
+
+if echo $1 | grep -i 'export\|dump' | grep -i 'db\|database' > /dev/null; then
+  DB_DUMP=$COMPOSE_PROJECT_APPDIR/database-$(date +'%Y%m%d%H%M%S').sql.gz
+  DB_DUMP_BASENAME=$(echo "${DB_DUMP##*/}")
+  touch "${DB_DUMP}"
+  DB_EXPORT_CMD="MYSQL_PWD=\$DATABASE_PASSWORD mysqldump --no-tablespaces --column-statistics=0 --set-gtid-purged=OFF --quick --max-allowed-packet=16M --disable-keys --hex-blob --no-autocommit --insert-ignore --skip-lock-tables --single-transaction -h\$DATABASE_HOST -P\$DATABASE_PORT -u\$DATABASE_USER \$DATABASE_NAME | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/DEFINER=CURRENT_USER \*/'"
+
+  echo "/* Starting export of the database... */"
+  echo "/* Dumping database to: $DB_DUMP */"
+  exec ${DOCKER_COMPOSE_RUN_CMD} -v "${DB_DUMP}:/${DB_DUMP_BASENAME}" database-cli bash -c "$DB_EXPORT_CMD | gzip > /${DB_DUMP_BASENAME}"
 fi
 
 if echo $1 | grep -i 'database' | grep -i 'setup\|config\|configure' > /dev/null; then
