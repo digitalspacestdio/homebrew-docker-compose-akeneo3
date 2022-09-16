@@ -203,6 +203,37 @@ docker compose up
 * `COMPOSE_PROJECT_PORT_ELASTICSEARCH` - `$COMPOSE_PROJECT_PORT_PREFIX` + `92` by default
 * `COMPOSE_PROJECT_PORT_MAIL_WEBGUI` - `$COMPOSE_PROJECT_PORT_PREFIX` + `25` by default
 
+## Enable xdebug
+In first you need to define the environment variable `XDEBUG_MODE`
+```bash
+export XDEBUG_MODE=debug
+```
+or container specific 
+```bash
+export XDEBUG_MODE_FPM=debug
+export XDEBUG_MODE_CLI=debug
+export XDEBUG_MODE_CRON=debug
+```
+
+Visual Studio Code launch.json
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "hostname": "0.0.0.0",
+            "port": 9003,
+            "pathMappings": {
+                "/var/www": "/home/developer/magento2",
+            }
+        }
+    ]
+}
+```
+
 ## Configure the XhProf in the project
 
 Add required packages 
