@@ -25,6 +25,8 @@ services:
     working_dir: '/var/www'
     networks:
       - 'appnet'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - 'XHGUI_MONGO_HOSTNAME=mongodb'
       - 'XHGUI_MONGO_DATABASE=xhprof'
@@ -89,6 +91,8 @@ services:
       - 'DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-magento2}'
     networks:
       - 'appnet'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       database:
         condition: service_healthy
@@ -142,6 +146,8 @@ services:
       - 'DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-magento2}'
     networks:
       - 'appnet'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       database:
         condition: service_healthy
