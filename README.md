@@ -227,7 +227,7 @@ Visual Studio Code launch.json
             "hostname": "0.0.0.0",
             "port": 9003,
             "pathMappings": {
-                "/var/www": "/home/developer/magento2",
+                "/var/www": "${fileWorkspaceFolder}"
             }
         }
     ]
