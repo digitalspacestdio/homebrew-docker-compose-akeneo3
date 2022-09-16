@@ -128,9 +128,7 @@ RUN set -eux; \
   apk del .build-deps
 
 RUN addgroup -g $PHP_GID ${PHP_USER_GROUP} \
-    && adduser -u $PHP_UID -G ${PHP_USER_GROUP} -s /bin/sh -D ${PHP_USER_NAME} \
-    && rm -rf /var/www/*  \
-    && chown ${PHP_USER_NAME}:${PHP_USER_GROUP} /var/www
+    && adduser -u $PHP_UID -G ${PHP_USER_GROUP} -s /bin/sh -D ${PHP_USER_NAME};
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
@@ -170,7 +168,10 @@ RUN curl -1sLf 'https://files.magerun.net/n98-magerun2.phar' > /usr/local/bin/n9
 
 COPY msmtprc /.msmtprc
 
+RUN rm -rf /var/www &&
+install -d -m 0755 -o ${PHP_USER_NAME} -g ${PHP_USER_GROUP} /var/www
+
 WORKDIR /var/www
 USER ${PHP_USER_NAME}
-VOLUME "/home/php" "/root" '/var/www'
+VOLUME "/var/www"
 CMD [ "bash" ]
