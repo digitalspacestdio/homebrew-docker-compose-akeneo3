@@ -168,7 +168,7 @@ RUN curl -1sLf 'https://files.magerun.net/n98-magerun2.phar' > /usr/local/bin/n9
 
 COPY msmtprc /.msmtprc
 
-RUN rm -rf /var/www
+RUN rm -rf /var/www \
   && install -d -m 0755 -o ${PHP_USER_NAME} -g ${PHP_USER_GROUP} /var/www
 
 WORKDIR /var/www
