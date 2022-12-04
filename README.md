@@ -61,11 +61,6 @@ cd ~/akeneo6
 docker-compose-akeneo6 composer create-project akeneo/pim-community-standard /var/www "6.0.*@stable"
 ```
 
-4. Deploy sample data
-```bash
-docker-compose-akeneo6 bin/console sampledata:deploy
-```
-
 5. Install the application
 ```bash
 docker-compose-akeneo6 make dev
@@ -76,7 +71,7 @@ docker-compose-akeneo6 make dev
 docker-compose-akeneo6 up -d
 ```
 
-> Application will be available by following link: http://localhost:30280/
+> Application will be available by following link: http://localhost:30680/
 
 ## Option.2 Starting already exists project from git and local sql dump
 
@@ -107,7 +102,7 @@ docker-compose-akeneo6 database-import /path/to/dump.sql.gz
 docker-compose-akeneo6 up -d
 ```
 
-> Application will be available by following link: http://localhost:30280/
+> Application will be available by following link: http://localhost:30680/
 
 ## Shutdown the project stack
 
@@ -150,7 +145,7 @@ docker compose up
 * `COMPOSE_PROJECT_MYSQL_IMAGE` - `mysql:8.0-oracle` see https://hub.docker.com/_/mysql/?tab=tags for more versions
 * `COMPOSE_PROJECT_ELASTICSEARCH_VERSION` - `7.16.3` see https://www.docker.elastic.co/r/elasticsearch/elasticsearch-oss for more versions
 * `COMPOSE_PROJECT_NAME` - by default the working directory name will be used
-* `COMPOSE_PROJECT_PORT_PREFIX` - `302` by default
+* `COMPOSE_PROJECT_PORT_PREFIX` - `306` by default
 * `COMPOSE_PROJECT_PORT_HTTP` - `$COMPOSE_PROJECT_PORT_PREFIX` + `80` by default
 * `COMPOSE_PROJECT_PORT_XHGUI` - `$COMPOSE_PROJECT_PORT_PREFIX` + `81` by default
 * `COMPOSE_PROJECT_PORT_MYSQL` - `$COMPOSE_PROJECT_PORT_PREFIX` + `06` by default
