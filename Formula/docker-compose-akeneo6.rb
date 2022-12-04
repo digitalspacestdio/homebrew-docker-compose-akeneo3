@@ -3,7 +3,7 @@ require 'formula'
 class DockerComposeAkeneo6 < Formula
   url "https://github.com/digitalspacestdio/homebrew-docker-compose-akeneo6.git", :using => :git
   version "0.1.0"
-  revision 2
+  revision 3
 
   depends_on 'gpatch'
   depends_on 'coreutils'

@@ -117,8 +117,9 @@ RUN set -eux; \
     bcmath \
     mbstring \
     opcache \
-    imagick \
   ; \
+  pecl install -o -f imagick \
+    &&  docker-php-ext-enable imagick \
   docker-php-source delete; \
   \
   runDeps="$( \
