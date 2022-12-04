@@ -223,34 +223,6 @@ if echo $1 | grep -i 'export\|dump' | grep -i 'db\|database' > /dev/null; then
   exec ${DOCKER_COMPOSE_RUN_CMD} -v "${DB_DUMP}:/${DB_DUMP_BASENAME}" database-cli bash -c "$DB_EXPORT_CMD | gzip > /${DB_DUMP_BASENAME}"
 fi
 
-if echo $1 | grep -i 'database' | grep -i 'setup\|config\|configure' > /dev/null; then
-  exec ${DOCKER_COMPOSE_RUN_CMD} cli bash <<COMMANDS
-set -x
-set -e
-bin/magento setup:config:set --quiet --db-host \$DATABASE_HOST --db-user \$DATABASE_USER --db-password \$DATABASE_PASSWORD --db-name \$DATABASE_NAME
-bin/magento app:config:import --quiet
-COMMANDS
-fi
-
-if echo $1 | grep -i 'redis' | grep -i 'setup\|config\|configure' > /dev/null; then
-  exec ${DOCKER_COMPOSE_RUN_CMD} cli bash <<COMMANDS
-set -x
-set -e
-bin/magento setup:config:set --quiet --cache-backend redis --cache-backend-redis-server redis --cache-backend-redis-port 6379 --cache-backend-redis-db 0
-bin/magento setup:config:set --quiet --session-save redis --session-save-redis-host redissession --session-save-redis-port 6379 --session-save-redis-db 0
-bin/magento app:config:import --quiet
-COMMANDS
-fi
-
-if echo $1 | grep -i 'es\|elastic' | grep -i 'setup\|config\|configure' > /dev/null; then
-  exec ${DOCKER_COMPOSE_RUN_CMD} cli bash <<COMMANDS
-set -x
-set -e
-bin/magento config:set catalog/search/elasticsearch7_server_hostname elasticsearch
-bin/magento config:set catalog/search/elasticsearch7_server_port 9200
-COMMANDS
-fi
-
 if echo $1 | grep -i '^mysql' > /dev/null; then
   for i in "$@"; do
       i="${i//\\/\\\\}"
@@ -261,29 +233,13 @@ if echo $1 | grep -i '^mysql' > /dev/null; then
   exec ${DOCKER_COMPOSE_RUN_CMD} database-cli bash -c "$MYSQL_CMD"
 fi
 
-if echo $1 | grep -i '^composer\|bin/\|npm\|php\|node\|yarn\|bash' > /dev/null; then
+if echo $1 | grep -i '^\(composer\|bin/\|npm\|php\|node\|yarn\|bash\|make\)' > /dev/null; then
   for i in "$@"; do
       i="${i//\\/\\\\}"
       i="${i//$/\\$}"
       C="$C \"${i//\"/\\\"}\""
   done
   exec ${DOCKER_COMPOSE_RUN_CMD} cli bash -c "exec $C"
-fi
-
-if echo $1 | grep -i 'xhprof' | grep -i 'patch' > /dev/null; then
-  exec bash <<COMMANDS
-set -x
-set -e
-patch -p0 -d ${COMPOSE_PROJECT_APPDIR} < "${COMPOSE_PROJECT_CONFIG_DIR}/xhprof.patch"
-COMMANDS
-fi
-
-if echo $1 | grep -i 'xhprof' | grep -i 'revert' > /dev/null; then
-  exec bash <<COMMANDS
-set -x
-set -e
-patch -R -p0 -d ${COMPOSE_PROJECT_APPDIR} < "${COMPOSE_PROJECT_CONFIG_DIR}/xhprof.patch"
-COMMANDS
 fi
 
 exec ${DOCKER_COMPOSE_BIN} "$@"

@@ -1,5 +1,5 @@
-# Magento 2 Docker Compose Environment
-> The easy magento environment for Dummies
+# Akeneo PIM v6 Docker Compose Environment
+> The easy environment for Dummies
 **Supported Systems**
 * MacOs (Intel, Apple M1)
 * Linux (AMD64, ARM64)
@@ -25,7 +25,7 @@ You need to export `COMPOSE_PROJECT_COMPOSER_AUTH` variable s othat Composer can
 ```bash
 export COMPOSE_PROJECT_COMPOSER_AUTH='{
     "http-basic": {
-        "repo.magento.com": {
+        "repo.example.com": {
             "username": "xxxxxxxxxxxx",
             "password": "yyyyyyyyyyyy"
         }
@@ -41,55 +41,39 @@ export COMPOSE_PROJECT_COMPOSER_AUTH='{
 ## Installation
 Install the formula via homebrew
 ```bash
-brew install digitalspacestdio/docker-compose-magento/docker-compose-magento
+brew install digitalspacestdio/docker-compose-akeneo6/docker-compose-akeneo6
 ```
 
-## Option.1 Starting new magento project with sample data from scratch
+## Option.1 Creating new project from scratch
 
 1. Create the new projet directory
 ```bash
-mkdir ~/magento2
+mkdir ~/akeneo6
 ```
 
 2. Navigate to the projet directory
 ```bash
-cd ~/magento2
+cd ~/akeneo6
 ```
 
-3. Create the new magento project
+3. Create the new project
 ```bash
-docker-compose-magento composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=^2 /var/www
+docker-compose-akeneo6 composer create-project akeneo/pim-community-standard /var/www "6.0.*@stable"
 ```
 
 4. Deploy sample data
 ```bash
-docker-compose-magento bin/magento sampledata:deploy
+docker-compose-akeneo6 bin/console sampledata:deploy
 ```
 
 5. Install the application
 ```bash
-docker-compose-magento bin/magento setup:install --backend-frontname="admin" --key="admin" --session-save="files" --db-host="database:3306" --db-name="magento2" --db-user="magento2" --db-password="magento2" --base-url="http://localhost:30280/" --base-url-secure="https://localhost:30280/" --admin-user="admin" --admin-password='$ecretPassw0rd' --admin-email="johndoe@example.com" --admin-firstname="John" --admin-lastname="Doe" --key="26765209cb05b93729898c892d18a8dd" --search-engine=elasticsearch7  --elasticsearch-host=elasticsearch --elasticsearch-port=9200
-```
-
-6. Optionally: Disable 2FA module (if needed)
-```bash
-docker-compose-magento bin/magento module:disable Magento_TwoFactorAuth
-```
-
-7. Optionally: Disable FPC
-```bash
-docker-compose-magento bin/magento cache:disable full_page
-```
-
-8. Optionally: Disable Secure URLs
-```bash
-docker-compose-magento bin/magento config:set web/secure/use_in_adminhtml 0
-docker-compose-magento bin/magento config:set web/secure/use_in_frontend 1
+docker-compose-akeneo6 make dev
 ```
 
 9. Start the stack in the background mode
 ```bash
-docker-compose-magento up -d
+docker-compose-akeneo6 up -d
 ```
 
 > Application will be available by following link: http://localhost:30280/
@@ -99,58 +83,28 @@ docker-compose-magento up -d
 1. Clone the project source code
 
 ```bash
-git clone https://github.com/magento/magento2.git ~/magento2
+git clone https://github.com/youcompanyname/akeneo6.git ~/akeneo6
 ```
 
 2. navigate to the project dir
 ```bash
-cd  ~/magento2
+cd  ~/akeneo6
 ```
 
 3. Install dependencies
 ```bash
-docker-compose-magento composer install -o --no-interaction
-```
-
-4. Configure the application database credentials
-```bash
-docker-compose-magento database-config
-```
-
-5. Configure the application redis settings
-```bash
-docker-compose-magento redis-config
-```
-
-6. Configure the application elasticsearch settings
-```bash
-docker-compose-magento elasticsearch-config
+docker-compose-akeneo6 composer install -o --no-interaction
 ```
 
 7. Import database dump (supports `*.sql` and `*.sql.gz` files)
 ```bash
-docker-compose-magento database-import /path/to/dump.sql.gz
+docker-compose-akeneo6 database-import /path/to/dump.sql.gz
 ```
 
-8. Optionally: Disable 2FA module (if needed)
-```bash
-docker-compose-magento bin/magento module:disable Magento_TwoFactorAuth
-```
-
-9. Optionally: Disable FPC
-```bash
-docker-compose-magento bin/magento cache:disable full_page
-```
-
-10. Optionally: Disable Secure URLs
-```bash
-docker-compose-magento bin/magento config:set  web/secure/use_in_adminhtml 0
-docker-compose-magento bin/magento config:set  web/secure/use_in_frontend 1
-```
 
 11. Start the stack in the background mode
 ```bash
-docker-compose-magento up -d
+docker-compose-akeneo6 up -d
 ```
 
 > Application will be available by following link: http://localhost:30280/
@@ -159,29 +113,29 @@ docker-compose-magento up -d
 
 Stop containers
 ```bash
-docker-compose-magento down
+docker-compose-akeneo6 down
 ```
 
 Destroy containers and persistent data
 ```bash
-docker-compose-magento down -v
+docker-compose-akeneo6 down -v
 ```
 
 ## Extra tools
 
 Connecting to the mysql container
 ```bash
-docker-compose-magento mysql
+docker-compose-akeneo6 mysql
 ```
 
 Connecting to the cli container
 ```bash
-docker-compose-magento bash
+docker-compose-akeneo6 bash
 ```
 
 Generate compose config and run directly without this tool
 ```bash
-docker-compose-magento config > docker-compose.yml
+docker-compose-akeneo6 config > docker-compose.yml
 ```
 ```bash
 docker compose up
@@ -233,24 +187,3 @@ Visual Studio Code launch.json
     ]
 }
 ```
-
-## Configure the XhProf in the project
-
-Add required packages 
-```bash
-docker-compose-magento composer require perftools/php-profiler 
-docker-compose-magento composer require perftools/xhgui-collector
-docker-compose-magento composer require alcaeus/mongo-php-adapter
-```
-
-Apply the patch
-
-```bash
-docker-compose-magento xhprof-patch
-```
-
-To revert the patch run:
-```bash
-docker-compose-magento xhprof-revert
-```
-

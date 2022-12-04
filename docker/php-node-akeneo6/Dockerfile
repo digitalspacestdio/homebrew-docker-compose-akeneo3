@@ -39,6 +39,7 @@ RUN apk add --no-cache \
     optipng \
     gifsicle \
     libstdc++ \
+    make \
   ;
 
 # Copy nodejs binaries
@@ -67,6 +68,8 @@ RUN set -eux; \
     tidyhtml-dev \
     imap-dev \
     oniguruma-dev \
+    imagemagick \
+    imagemagick-dev \
   ; \
   \
   docker-php-source extract; \
@@ -114,6 +117,7 @@ RUN set -eux; \
     bcmath \
     mbstring \
     opcache \
+    imagick \
   ; \
   docker-php-source delete; \
   \
@@ -161,10 +165,6 @@ ENV XDEBUG_MODE=off
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 COPY --from=composer_app /usr/bin/composer /usr/bin/composer
-
-RUN curl -1sLf 'https://files.magerun.net/n98-magerun2.phar' > /usr/local/bin/n98-magerun2.phar \
-  && ln -s /usr/local/bin/n98-magerun2.phar /usr/local/bin/n98-magerun2 \
-  && chmod +x /usr/local/bin/n98-magerun2.phar
 
 COPY msmtprc /.msmtprc
 
