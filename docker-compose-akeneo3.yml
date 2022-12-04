@@ -188,7 +188,8 @@ services:
     healthcheck:
       test: mongo --quiet --eval 'db.runCommand("ping").ok' xhgui
       start_period: 30s
-      interval: 5s
+      interval: 6s
+      retries: 30
     logging:
       driver: "json-file"
       options:
@@ -214,9 +215,9 @@ services:
     restart: always
     healthcheck:
       test: /bin/bash -c "</dev/tcp/localhost/9200"
-      start_period: 15s
-      interval: 5s
-      retries: 5
+      start_period: 60s
+      interval: 6s
+      retries: 30
     logging:
       driver: "json-file"
       options:
@@ -250,8 +251,8 @@ services:
     healthcheck:
       test: "mysqladmin ping --silent -u$${MYSQL_USER} -p$${MYSQL_PASSWORD}"
       start_period: 60s
-      interval: 5s
-      retries: 5
+      interval: 6s
+      retries: 30
     logging:
       driver: "json-file"
       options:

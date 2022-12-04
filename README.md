@@ -58,12 +58,25 @@ cd ~/akeneo3
 
 3. Create the new project
 ```bash
-docker-compose-akeneo3 composer create-project akeneo/pim-community-standard /var/www "6.0.*@stable"
+docker-compose-akeneo3 composer create-project akeneo/pim-community-standard /var/www "3.2.*@stable"
 ```
 
-5. Install the application
+5. Install dependencies
 ```bash
-docker-compose-akeneo3 make dev
+docker-compose-akeneo3 composer install --optimize-autoloader --prefer-dist --no-interaction
+docker-compose-akeneo3 yarn install
+```
+
+6. Install frontend
+```bash
+docker-compose-akeneo3 bin/console cache:clear --no-warmup --env=prod
+docker-compose-akeneo3 bin/console pim:installer:assets --symlink --clean --env=prod
+```
+
+7. Install application
+```bash
+docker-compose-akeneo3 bin/console pim:install --force --symlink --clean --env=prod
+docker-compose-akeneo3 yarn run webpack
 ```
 
 9. Start the stack in the background mode
@@ -88,14 +101,25 @@ cd  ~/akeneo3
 
 3. Install dependencies
 ```bash
-docker-compose-akeneo3 composer install -o --no-interaction
+docker-compose-akeneo3 composer install --optimize-autoloader --prefer-dist --no-interaction
+docker-compose-akeneo3 yarn install
 ```
 
-7. Import database dump (supports `*.sql` and `*.sql.gz` files)
+4. Import database dump (supports `*.sql` and `*.sql.gz` files)
 ```bash
 docker-compose-akeneo3 database-import /path/to/dump.sql.gz
 ```
 
+6. Install frontend
+```bash
+docker-compose-akeneo3 bin/console cache:clear --no-warmup --env=prod
+docker-compose-akeneo3 bin/console pim:installer:assets --symlink --clean --env=prod
+```
+
+7. Install application
+```bash
+docker-compose-akeneo3 yarn run webpack
+```
 
 11. Start the stack in the background mode
 ```bash
