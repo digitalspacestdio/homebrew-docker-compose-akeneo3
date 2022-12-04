@@ -2,12 +2,12 @@ version: '3.4'
 
 services:
   mutagen:
-    container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_mutagen_${COMPOSE_PROJECT_PHP_VERSION:-7.2}_${COMPOSE_PROJECT_NODE_VERSION:-12.22.12}
+    container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_mutagen_${COMPOSE_PROJECT_PHP_VERSION:-7.2}_${COMPOSE_PROJECT_NODE_VERSION:-12.22.8}
     build:
       context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo3"
       args:
         PHP_VERSION: ${COMPOSE_PROJECT_PHP_VERSION:-7.2}
-        NODE_VERSION: ${COMPOSE_PROJECT_NODE_VERSION:-12.22.12}
+        NODE_VERSION: ${COMPOSE_PROJECT_NODE_VERSION:-12.22.8}
         PHP_USER_NAME: ${COMPOSE_PROJECT_PHP_USER_NAME:-developer}
         PHP_USER_GROUP: ${COMPOSE_PROJECT_PHP_USER_GROUP:-developer}
         PHP_UID: ${COMPOSE_PROJECT_PHP_UID:-1000}

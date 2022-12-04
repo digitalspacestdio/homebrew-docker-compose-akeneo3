@@ -165,7 +165,7 @@ docker compose up
 * `COMPOSE_PROJECT_MODE` - (`mutagen`|`default`)
 * `COMPOSE_PROJECT_COMPOSER_VERSION` - (`1|2` )
 * `COMPOSE_PROJECT_PHP_VERSION` - (`7.2`), the image will be built from a corresponding `fpm-alpine` image, see https://hub.docker.com/_/php/?tab=tags&page=1&name=fpm-alpine&ordering=name for more versions
-* `COMPOSE_PROJECT_NODE_VERSION` - (`12.22.12`) the image will be built from a corresponding `alpine` image, see https://hub.docker.com/_/node/tags?page=1&name=alpine3.16 for more versions
+* `COMPOSE_PROJECT_NODE_VERSION` - (`12.22.8`) the image will be built from a corresponding `alpine` image, see https://hub.docker.com/_/node/tags?page=1&name=alpine3.16 for more versions
 * `COMPOSE_PROJECT_MYSQL_IMAGE` - `biarms/mysql:5.7.33-beta-circleci` see https://hub.docker.com/r/biarms/mysql/tags for more versions
 * `COMPOSE_PROJECT_ELASTICSEARCH_VERSION` - `6.5.4` see https://www.docker.elastic.co/r/elasticsearch/elasticsearch-oss for more versions
 * `COMPOSE_PROJECT_NAME` - by default the working directory name will be used
