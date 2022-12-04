@@ -1,7 +1,7 @@
 require 'formula'
 
-class DockerComposeAkeneo6 < Formula
-  url "https://github.com/digitalspacestdio/homebrew-docker-compose-akeneo6.git", :using => :git
+class DockerComposeakeneo3 < Formula
+  url "https://github.com/digitalspacestdio/homebrew-docker-compose-akeneo3.git", :using => :git
   version "0.1.2"
   revision 3
 
@@ -11,14 +11,14 @@ class DockerComposeAkeneo6 < Formula
   depends_on 'mutagen-io/mutagen/mutagen' if OS.mac?
 
   def install
-    #bin.install "docker-compose-akeneo6"
+    #bin.install "docker-compose-akeneo3"
     libexec.install Dir["*"]
-    bin.write_exec_script libexec/"docker-compose-akeneo6"
+    bin.write_exec_script libexec/"docker-compose-akeneo3"
   end
 
   def caveats
       s = <<~EOS
-        docker-compose-akeneo6 was installed
+        docker-compose-akeneo3 was installed
       EOS
       s
     end

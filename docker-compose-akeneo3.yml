@@ -2,12 +2,12 @@ version: '3.4'
 
 services:
   fpm:
-    container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_fpm_${COMPOSE_PROJECT_PHP_VERSION:-8.0}_${COMPOSE_PROJECT_NODE_VERSION:-14.21.1}
+    container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_fpm_${COMPOSE_PROJECT_PHP_VERSION:-7.2}_${COMPOSE_PROJECT_NODE_VERSION:-10.24.1}
     build:
-      context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo6"
+      context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo3"
       args:
-        PHP_VERSION: ${COMPOSE_PROJECT_PHP_VERSION:-8.0}
-        NODE_VERSION: ${COMPOSE_PROJECT_NODE_VERSION:-14.21.1}
+        PHP_VERSION: ${COMPOSE_PROJECT_PHP_VERSION:-7.2}
+        NODE_VERSION: ${COMPOSE_PROJECT_NODE_VERSION:-10.24.1}
         PHP_USER_NAME: ${COMPOSE_PROJECT_PHP_USER_NAME:-developer}
         PHP_USER_GROUP: ${COMPOSE_PROJECT_PHP_USER_GROUP:-developer}
         PHP_UID: ${COMPOSE_PROJECT_PHP_UID:-1000}
@@ -20,8 +20,8 @@ services:
       - 'appcode:/var/www:consistent'
       - 'home-php:/home/php'
       - 'home-root:/root'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo6/msmtprc:/home/php/.msmtprc:ro'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo6/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint:ro'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo3/msmtprc:/home/php/.msmtprc:ro'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo3/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint:ro'
     working_dir: '/var/www'
     networks:
       - 'appnet'
@@ -34,12 +34,12 @@ services:
       - 'NODE_OPTIONS="--max-old-space-size=1024"'
       - 'XDEBUG_MODE=${XDEBUG_MODE_FPM:-off}'
       - 'DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
-      - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
+      - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3303}'
       - 'DATABASE_USER=${COMPOSE_PROJECT_ORO_DB_USER:-akeneo_pim}'
       - 'DATABASE_PASSWORD=${COMPOSE_PROJECT_DATABASE_PASSWORD:-akeneo_pim}'
       - 'DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-akeneo_pim}'
       - 'APP_DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
-      - 'APP_DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
+      - 'APP_DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3303}'
       - 'APP_DATABASE_USER=${COMPOSE_PROJECT_ORO_DB_USER:-akeneo_pim}'
       - 'APP_DATABASE_PASSWORD=${COMPOSE_PROJECT_DATABASE_PASSWORD:-akeneo_pim}'
       - 'APP_DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-akeneo_pim}'
@@ -64,12 +64,12 @@ services:
       interval: 2s
 
   cli:
-    container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_cli_${COMPOSE_PROJECT_PHP_VERSION:-8.0}_${COMPOSE_PROJECT_NODE_VERSION:-14.21.1}
+    container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_cli_${COMPOSE_PROJECT_PHP_VERSION:-7.2}_${COMPOSE_PROJECT_NODE_VERSION:-10.24.1}
     build:
-      context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo6"
+      context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo3"
       args:
-        PHP_VERSION: ${COMPOSE_PROJECT_PHP_VERSION:-8.0}
-        NODE_VERSION: ${COMPOSE_PROJECT_NODE_VERSION:-14.21.1}
+        PHP_VERSION: ${COMPOSE_PROJECT_PHP_VERSION:-7.2}
+        NODE_VERSION: ${COMPOSE_PROJECT_NODE_VERSION:-10.24.1}
         PHP_USER_NAME: ${COMPOSE_PROJECT_PHP_USER_NAME:-developer}
         PHP_USER_GROUP: ${COMPOSE_PROJECT_PHP_USER_GROUP:-developer}
         PHP_UID: ${COMPOSE_PROJECT_PHP_UID:-1000}
@@ -82,8 +82,8 @@ services:
       - 'appcode:/var/www:consistent'
       - 'home-php:/home/php'
       - 'home-root:/root'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo6/msmtprc:/home/php/.msmtprc:ro'
-      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo6/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint:ro'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo3/msmtprc:/home/php/.msmtprc:ro'
+      - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/php-node-akeneo3/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint:ro'
     working_dir: '/var/www'
     environment:
       - 'XHGUI_MONGO_HOSTNAME=mongodb'
@@ -92,12 +92,12 @@ services:
       - 'NODE_OPTIONS="--max-old-space-size=1024"'
       - 'XDEBUG_MODE=${XDEBUG_MODE_CLI:-off}'
       - 'DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
-      - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
+      - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3303}'
       - 'DATABASE_USER=${COMPOSE_PROJECT_ORO_DB_USER:-akeneo_pim}'
       - 'DATABASE_PASSWORD=${COMPOSE_PROJECT_DATABASE_PASSWORD:-akeneo_pim}'
       - 'DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-akeneo_pim}'
       - 'APP_DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
-      - 'APP_DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
+      - 'APP_DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3303}'
       - 'APP_DATABASE_USER=${COMPOSE_PROJECT_ORO_DB_USER:-akeneo_pim}'
       - 'APP_DATABASE_PASSWORD=${COMPOSE_PROJECT_DATABASE_PASSWORD:-akeneo_pim}'
       - 'APP_DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-akeneo_pim}'
@@ -198,7 +198,7 @@ services:
     build:
       context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/elasticsearch"
       args:
-        COMPOSE_PROJECT_ELASTICSEARCH_VERSION: ${COMPOSE_PROJECT_ELASTICSEARCH_VERSION:-7.16.3}
+        COMPOSE_PROJECT_ELASTICSEARCH_VERSION: ${COMPOSE_PROJECT_ELASTICSEARCH_VERSION:-6.5.4}
     container_name: ${COMPOSE_PROJECT_NAME}_elasticsearch
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
@@ -223,7 +223,7 @@ services:
         max-size: "10m"
 
   database:
-    image: '${COMPOSE_PROJECT_MYSQL_IMAGE:-mysql:8.0-oracle}'
+    image: '${COMPOSE_PROJECT_MYSQL_IMAGE:-mysql:5.7-oracle}'
     command: '--federated --default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
     container_name: ${COMPOSE_PROJECT_NAME}_database
     labels:
@@ -241,7 +241,7 @@ services:
       - '${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/mysql/my.cnf:/etc/mysql/conf.d/app.cnf:ro'
       - 'mysql-data:/var/lib/mysql:delegated'
     ports:
-      - '${COMPOSE_PROJECT_MYSQL_BIND_HOST:-127.0.0.1}:${COMPOSE_PROJECT_PORT_PREFIX:-33}06:3306'
+      - '${COMPOSE_PROJECT_MYSQL_BIND_HOST:-127.0.0.1}:${COMPOSE_PROJECT_PORT_PREFIX:-33}06:3303'
     networks:
       appnet:
         aliases:
@@ -258,19 +258,19 @@ services:
         max-size: "10m"
 
   database-cli:
-    image: '${COMPOSE_PROJECT_MYSQL_IMAGE:-mysql:8.0-oracle}'
+    image: '${COMPOSE_PROJECT_MYSQL_IMAGE:-mysql:5.7-oracle}'
     command: /bin/true
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
     environment:
       - 'LANG=C.UTF-8'
       - 'DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
-      - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
+      - 'DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3303}'
       - 'DATABASE_USER=${COMPOSE_PROJECT_ORO_DB_USER:-akeneo_pim}'
       - 'DATABASE_PASSWORD=${COMPOSE_PROJECT_DATABASE_PASSWORD:-akeneo_pim}'
       - 'DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-akeneo_pim}'
       - 'APP_DATABASE_HOST=${COMPOSE_PROJECT_DATABASE_HOST:-database}'
-      - 'APP_DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3306}'
+      - 'APP_DATABASE_PORT=${COMPOSE_PROJECT_DATABASE_PORT:-3303}'
       - 'APP_DATABASE_USER=${COMPOSE_PROJECT_ORO_DB_USER:-akeneo_pim}'
       - 'APP_DATABASE_PASSWORD=${COMPOSE_PROJECT_DATABASE_PASSWORD:-akeneo_pim}'
       - 'APP_DATABASE_NAME=${COMPOSE_PROJECT_DATABASE_NAME:-akeneo_pim}'

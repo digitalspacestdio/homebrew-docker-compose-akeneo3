@@ -1,6 +1,6 @@
-ARG ALPINE_VERSION=3.16
-ARG NODE_VERSION=16.16.0
-ARG PHP_VERSION=8.0
+ARG ALPINE_VERSION=3.11
+ARG NODE_VERSION=10.24.1
+ARG PHP_VERSION=7.2
 ARG COMPOSER_VERSION=2
 
 # Nodejs image
@@ -17,11 +17,11 @@ ARG PHP_GID=1000
 ARG PHP_USER_NAME=developer
 ARG PHP_USER_GROUP=developer
 
-ARG EXT_APCU_VERSION=5.1.21
+ARG EXT_APCU_VERSION=5.1.22
 ARG EXT_REDIS_VERSION=5.3.7 
 ARG EXT_IGBINARY_VERSION=3.2.7
-ARG EXT_MONGODB_VERSION=1.14.0
-ARG EXT_XDEBUG_VERSION=3.1.5
+ARG EXT_MONGODB_VERSION=1.15.0
+ARG EXT_XDEBUG_VERSION=3.1.6
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -52,7 +52,7 @@ RUN node --version && npm --version && yarn --version
 RUN set -eux; \
   apk add --no-cache --virtual .build-deps \
     $PHPIZE_DEPS \
-    icu-data-full \
+    icu-libs \
     icu-dev \
     libzip-dev \
     zlib-dev \
@@ -75,7 +75,7 @@ RUN set -eux; \
   docker-php-source extract; \
   docker-php-ext-configure zip; \
   docker-php-ext-configure imap --with-imap --with-imap-ssl; \
-  docker-php-ext-configure gd --with-freetype --with-webp --with-jpeg; \
+  docker-php-ext-configure gd; \
   \
   mkdir -p /usr/src/php/ext/apcu; \
   curl -fsSL https://github.com/krakjoe/apcu/archive/v$EXT_APCU_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/apcu --strip 1; \
