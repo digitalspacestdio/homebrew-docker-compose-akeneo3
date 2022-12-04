@@ -168,6 +168,7 @@ ENV XDEBUG_MODE=off
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 COPY --from=composer_app /usr/bin/composer /usr/bin/composer
+RUN ln -s /usr/bin/composer /usr/local/bin/composer
 
 COPY msmtprc /.msmtprc
 
