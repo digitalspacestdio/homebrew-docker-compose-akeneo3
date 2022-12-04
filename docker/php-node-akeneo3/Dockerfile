@@ -170,6 +170,8 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 COPY --from=composer_app /usr/bin/composer /usr/bin/composer
 RUN ln -s /usr/bin/composer /usr/local/bin/composer
 
+RUN npm install --global webpack
+
 COPY msmtprc /.msmtprc
 
 RUN rm -rf /var/www \
@@ -177,6 +179,5 @@ RUN rm -rf /var/www \
 
 WORKDIR /var/www
 USER ${PHP_USER_NAME}
-RUN npm install --global webpack
 VOLUME "/var/www"
 CMD [ "bash" ]
