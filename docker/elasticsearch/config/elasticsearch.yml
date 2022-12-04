@@ -10,7 +10,7 @@ node:
 
 processors: ${PROCESSORS:1}
 
-network.host: _local_
+network.host: ${NETWORK_HOST}
 
 path:
   data: /data/data
