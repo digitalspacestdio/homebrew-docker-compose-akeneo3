@@ -262,7 +262,7 @@ services:
         max-size: "10m"
 
   database-cli:
-    image: '${COMPOSE_PROJECT_MYSQL_IMAGE:-mysql:5.7-oracle}'
+    image: '${COMPOSE_PROJECT_MYSQL_IMAGE:-biarms/mysql:5.7.33-beta-circleci}'
     command: /bin/true
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'
