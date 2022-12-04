@@ -117,6 +117,7 @@ RUN set -eux; \
     bcmath \
     mbstring \
     opcache \
+    exif \
   ; \
   pecl install -o -f imagick \
     &&  docker-php-ext-enable imagick \
