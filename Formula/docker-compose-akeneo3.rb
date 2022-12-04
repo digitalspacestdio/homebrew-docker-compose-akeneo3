@@ -1,6 +1,6 @@
 require 'formula'
 
-class DockerComposeakeneo3 < Formula
+class DockerComposeAkeneo3 < Formula
   url "https://github.com/digitalspacestdio/homebrew-docker-compose-akeneo3.git", :using => :git
   version "0.1.2"
   revision 3
