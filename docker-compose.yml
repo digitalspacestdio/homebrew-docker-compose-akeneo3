@@ -27,7 +27,6 @@ services:
       - 'appnet'
     extra_hosts:
       - "host.docker.internal:host-gateway"
-      - "mysql:database"
     environment:
       - 'XHGUI_MONGO_HOSTNAME=mongodb'
       - 'XHGUI_MONGO_DATABASE=xhprof'
@@ -109,7 +108,6 @@ services:
       - 'appnet'
     extra_hosts:
       - "host.docker.internal:host-gateway"
-      - "mysql:database"
     depends_on:
       database:
         condition: service_healthy
@@ -245,7 +243,9 @@ services:
     ports:
       - '${COMPOSE_PROJECT_MYSQL_BIND_HOST:-127.0.0.1}:${COMPOSE_PROJECT_PORT_PREFIX:-33}06:3306'
     networks:
-      - 'appnet'
+      appnet:
+        aliases:
+          - mysql
     restart: always
     healthcheck:
       test: "mysqladmin ping --silent -u$${MYSQL_USER} -p$${MYSQL_PASSWORD}"
