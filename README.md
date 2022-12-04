@@ -148,7 +148,7 @@ docker compose up
 * `COMPOSE_PROJECT_PHP_VERSION` - (`7.4`|`8.0`|`8.1`|`8.2`), the image will be built from a corresponding `fpm-alpine` image, see https://hub.docker.com/_/php/?tab=tags&page=1&name=fpm-alpine&ordering=name for more versions
 * `COMPOSE_PROJECT_NODE_VERSION` - (`12.22.12`|`14.19.3`|`16.16.0`) the image will be built from a corresponding `alpine` image, see https://hub.docker.com/_/node/tags?page=1&name=alpine3.16 for more versions
 * `COMPOSE_PROJECT_MYSQL_IMAGE` - `mysql:8.0-oracle` see https://hub.docker.com/_/mysql/?tab=tags for more versions
-* `COMPOSE_PROJECT_ELASTICSEARCH_VERSION` - `7.17.5` see https://www.docker.elastic.co/r/elasticsearch/elasticsearch-oss for more versions
+* `COMPOSE_PROJECT_ELASTICSEARCH_VERSION` - `7.16.3` see https://www.docker.elastic.co/r/elasticsearch/elasticsearch-oss for more versions
 * `COMPOSE_PROJECT_NAME` - by default the working directory name will be used
 * `COMPOSE_PROJECT_PORT_PREFIX` - `302` by default
 * `COMPOSE_PROJECT_PORT_HTTP` - `$COMPOSE_PROJECT_PORT_PREFIX` + `80` by default

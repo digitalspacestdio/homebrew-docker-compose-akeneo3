@@ -191,7 +191,7 @@ services:
     build:
       context: "${COMPOSE_PROJECT_CONFIG_DIR:-.}/docker/elasticsearch"
       args:
-        COMPOSE_PROJECT_ELASTICSEARCH_VERSION: ${COMPOSE_PROJECT_ELASTICSEARCH_VERSION:-7.17.5}
+        COMPOSE_PROJECT_ELASTICSEARCH_VERSION: ${COMPOSE_PROJECT_ELASTICSEARCH_VERSION:-7.16.3}
     container_name: ${COMPOSE_PROJECT_NAME}_elasticsearch
     labels:
       - 'project.name=${COMPOSE_PROJECT_NAME}'

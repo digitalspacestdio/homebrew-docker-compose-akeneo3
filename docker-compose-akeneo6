@@ -50,6 +50,14 @@ if [[ -f "$COMPOSE_PROJECT_APPDIR/.env" ]]; then
   set +o allexport
 fi
 
+# Load user composer auth.json if available
+if [[ -z $COMPOSE_PROJECT_COMPOSER_AUTH ]] && [[ -z $COMPOSER_AUTH ]] && which composer > /dev/null 2>&1; then
+  COMPOSER_AUTH_JSON=$(composer config --no-interaction --global home 2>/dev/null)/auth.json
+  if [[ -f "${COMPOSER_AUTH_JSON}" ]]; then
+    COMPOSE_PROJECT_COMPOSER_AUTH=$(cat "${COMPOSER_AUTH_JSON}")
+  fi
+fi
+
 export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-$(basename "$COMPOSE_PROJECT_APPDIR")}
 export COMPOSE_PROJECT_PORT_PREFIX=${COMPOSE_PROJECT_PORT_PREFIX:-"302"}
 export COMPOSE_PROJECT_PORT_HTTP=${COMPOSE_PROJECT_PORT_HTTP:-"${COMPOSE_PROJECT_PORT_PREFIX}80"}
