@@ -170,7 +170,7 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 COPY --from=composer_app /usr/bin/composer /usr/bin/composer
 RUN ln -s /usr/bin/composer /usr/local/bin/composer
 
-RUN npm install --global webpack
+RUN npm install --global webpack webpack-cli
 
 COPY msmtprc /.msmtprc
 
