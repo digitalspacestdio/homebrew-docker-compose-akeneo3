@@ -177,5 +177,6 @@ RUN rm -rf /var/www \
 
 WORKDIR /var/www
 USER ${PHP_USER_NAME}
+RUN npm install --global webpack
 VOLUME "/var/www"
 CMD [ "bash" ]
