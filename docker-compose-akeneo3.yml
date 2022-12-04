@@ -60,8 +60,9 @@ services:
         max-size: "10m"
     healthcheck:
       test: /bin/bash -c "</dev/tcp/localhost/9000"
-      start_period: 60s
-      interval: 2s
+      start_period: 30s
+      interval: 6s
+      retries: 30
 
   cli:
     container_name: ${COMPOSE_PROJECT_NAME:-unnamed}_cli_${COMPOSE_PROJECT_PHP_VERSION:-7.2}_${COMPOSE_PROJECT_NODE_VERSION:-10.24.1}
@@ -133,7 +134,8 @@ services:
     healthcheck:
       test: "nc -vz -w 1 localhost 8025"
       start_period: 5s
-      interval: 2s
+      interval: 6s
+      retries: 30
     logging:
       driver: "json-file"
       options:
@@ -162,7 +164,8 @@ services:
     healthcheck:
       test: nc -vz -w 1 localhost 80
       start_period: 30s
-      interval: 2s
+      interval: 6s
+      retries: 30
     logging:
       driver: "json-file"
       options:
@@ -215,7 +218,7 @@ services:
     restart: always
     healthcheck:
       test: /bin/bash -c "</dev/tcp/localhost/9200"
-      start_period: 60s
+      start_period: 30s
       interval: 6s
       retries: 30
     logging:
@@ -250,7 +253,7 @@ services:
     restart: always
     healthcheck:
       test: "mysqladmin ping --silent -u$${MYSQL_USER} -p$${MYSQL_PASSWORD}"
-      start_period: 60s
+      start_period: 30s
       interval: 6s
       retries: 30
     logging:
@@ -304,7 +307,8 @@ services:
     healthcheck:
       test: /bin/bash -c "</dev/tcp/localhost/80"
       start_period: 30s
-      interval: 2s
+      interval: 6s
+      retries: 30
 
 networks:
   appnet:
