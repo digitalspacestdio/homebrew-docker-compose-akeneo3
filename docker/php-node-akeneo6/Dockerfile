@@ -68,8 +68,8 @@ RUN set -eux; \
     tidyhtml-dev \
     imap-dev \
     oniguruma-dev \
-    imagemagick \
-    imagemagick-dev \
+    imagemagick6 \
+    imagemagick6-dev \
   ; \
   \
   docker-php-source extract; \
