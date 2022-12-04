@@ -43,10 +43,6 @@ services:
     depends_on:
       database:
         condition: service_healthy
-      redis:
-        condition: service_healthy
-      redissession:
-        condition: service_healthy
       elasticsearch:
         condition: service_healthy
       mail:
@@ -107,10 +103,6 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       database:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      redissession:
         condition: service_healthy
       elasticsearch:
         condition: service_healthy
