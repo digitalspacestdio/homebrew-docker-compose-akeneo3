@@ -1,4 +1,4 @@
-# Akeneo PIM v6 Docker Compose Environment
+# Akeneo PIM v3 Docker Compose Environment
 > The easy environment for Dummies
 **Supported Systems**
 * MacOs (Intel, Apple M1)
