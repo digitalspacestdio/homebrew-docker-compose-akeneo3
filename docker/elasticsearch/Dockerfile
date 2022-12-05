@@ -15,13 +15,13 @@ RUN apt-get update -q \
   && echo "===> Downloading Elasticsearch..." \
   && echo "===> $ES_TARBAL" \
   && curl -o elasticsearch.tar.gz -Lskj "$ES_TARBAL"; \
-	if [ "$ES_TARBALL_ASC" ]; then \
-		curl -o elasticsearch.tar.gz.asc -Lskj "$ES_TARBALL_ASC"; \
-		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY"; \
-		gpg --batch --verify elasticsearch.tar.gz.asc elasticsearch.tar.gz; \
-		rm -r "$GNUPGHOME" elasticsearch.tar.gz.asc; \
-	fi; \
+	# if [ "$ES_TARBALL_ASC" ]; then \
+	# 	curl -o elasticsearch.tar.gz.asc -Lskj "$ES_TARBALL_ASC"; \
+	# 	export GNUPGHOME="$(mktemp -d)"; \
+	# 	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY"; \
+	# 	gpg --batch --verify elasticsearch.tar.gz.asc elasticsearch.tar.gz; \
+	# 	rm -r "$GNUPGHOME" elasticsearch.tar.gz.asc; \
+	# fi; \
   echo "===> Installing Elasticsearch..." \
   && tar -vzxf elasticsearch.tar.gz \
   && ls -lah \
